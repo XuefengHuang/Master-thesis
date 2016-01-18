@@ -1,0 +1,21 @@
+\section{Implementation}
+\label{sec.implementation}
+
+Based on the design introduced in \S{\ref{sec.design}}, we implement a secure network testbed. We describe the implementation details of our system in this section.
+
+\subsection{Architecture of Seattle}
+The primary goal of Seattle is to run a wide range of network measurements on remote home gateway without compromising home network security and privacy. To achieve this goal, we try to minimize the disruption of Internet connectivity. From distributed platform design, we leverage Seattle Testbed which is a community-driven, open source cloud computing system to acheive this goal. 
+
+When distributed platform is achieved, we also want to run arbitrary codes across donated devices. We safely extend new research capabilities in our Repy sandbox. We use Repy sandbox to reconstruct a programming interface, which provides network functionalities sufficient for most network measurements.
+
+\subsection{Implementation Details}
+\textbf{Seattle porting onto home wireless router} 
+Seattle is a platform for networking and distributed systems research. It supports a wide range of devices including desktop, laptop, servers, etc.
+
+Compared to desktop and laptop environments, deployment on home wireless router has more resource limitation such as restricted computational resources. However, recently we are able to port Seattle to embedded devices.Users can now build their own Seattle installer(IPK) via OpenWrt SDK and install it on the device easily. 
+
+\textbf{Supporting wireless interface on wireless embedded devices} 
+Due to its isolation of the virtual machine, Seattle cannot normally access network traffic data on a user?s home router devices, such as bandwidth, WiFi SSID and signal strength, etc. However, if the data is anonymized, it would be very useful to researchers. Seattle provides an API for reading wireless network data from a Seattle VM and providing it to users. It is extended from Seattle RepyV2 and provide system wide protection against greedy processes that include isolating performance. 
+
+\textbf{Reference monitor}
+Seattle also provides a framework of reference monitor, to enforce mandatory access control to sensitive data in real time. Based on the type of network measurement experiment, the data returned by the embedded devices can be passed through, filtered, or dropped by the reference monitor.
