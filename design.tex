@@ -1,20 +1,55 @@
 \section{A New Design for Building Secure Network Testbed}
 \label{sec.design}
-Our goal is to build a secure network testbed that can mitigate the problem of end user's security and privacy issue. 
+Our goal is to build a secure network testbed that can mitigate the problem 
+of end user's security and privacy issue. 
 
-The previous works introduced in \S{\ref{sec.related_work}} serves the purpose of understanding the disadvantages of current network testbed. Our finding in \S{\ref{sec.related_work}} suggest that it is important to balance the trade-off between security and functionalitiy.
+The previous works introduced in \S{\ref{sec.related_work}} serves the 
+purpose of understanding the disadvantages of current network testbed. Our 
+finding in \S{\ref{sec.related_work}} suggest that it is important to 
+balance the trade-off between security and functionalitiy.
 
-In this section, we use this idea to guild our new design for building secure network testbed. Our goal is to allow researchers to run texperiments while reducing the risk of security and privacy problem.
+In this section, we use this idea to guild our new design for building 
+secure network testbed. Our goal is to allow researchers to run texperiments 
+while reducing the risk of security and privacy problem.
 
 \subsection{Architecture Design}
-Today?s poor visibility into the home network hampers progress in a number of important research areas, from WiFi management strategies to broadband characterization. Several related works have been worked on deploying measurements and applications in broadband access networks. However, they have several security issues that might compromise user?s privacy. Seattle allows untrusted parties to run arbitrary codes on our platform. Different from the existing network testbeds, Seattle provides a programmable resource and privacy protection framework. A user can let a third party have access to their network traffic data within a security and performance isolated virtual machine. Users not only are able to control how much information they would share with the rest of world, but also decide how many resources an application can use. For example, an experiment could be prevented when consuming so much resources or access some interfaces which are not allowed by device?s owner. 
+Today's poor visibility into the home network hampers progress in a number 
+of important research areas, from WiFi management strategies to broadband 
+characterization. Several related works have been worked on deploying 
+measurements and applications in broadband access networks. However, they 
+have several security issues that might compromise user?s privacy. Seattle 
+allows untrusted parties to run arbitrary codes on our platform. Different 
+from the existing network testbeds, Seattle provides a programmable resource 
+and privacy protection framework. A user can let a third party have access 
+to their network traffic data within a security and performance isolated 
+virtual machine. Users not only are able to control how much information 
+they would share with the rest of world, but also decide how many resources 
+an application can use. For example, an experiment could be prevented when 
+consuming so much resources or access some interfaces which are not allowed 
+by device's owner. 
 
-Seattle is composed of three separate parts: router owner, clearinghouse and researcher. Router owner donates computational resources to our platform, clearinghouse enable researchers to pool and share resources, researcher is seeking to run experiments on remote router.
+Seattle is composed of three separate parts: router owner, clearinghouse and 
+researcher. Router owner donates computational resources to our platform, 
+clearinghouse enable researchers to pool and share resources, researcher is 
+seeking to run experiments on remote router.
 
-Before conducting any network measurement experiments, owner first downloads installer package from clearinghouse which is a testbed server that keep track of routers and allow researcher to access available routers. To run codes on owner?s router, researchers needs to download an experiment manager to his own laptop. Researcher uses the experiment manager to access the remote router directly, upload experiment codes and start or stop the execution of the experiment.
+Before conducting any network measurement experiments, owner first downloads 
+installer package from clearinghouse which is a testbed server that keep 
+track of routers and allow researcher to access available routers. To run 
+codes on owner?s router, researchers needs to download an experiment manager 
+to his own laptop. Researcher uses the experiment manager to access the 
+remote router directly, upload experiment codes and start or stop the 
+execution of the experiment.
 
 \subsection{API Design}
-Our main goal is to provide a wide range of capabilities that support the implementation of a broad range of network measurements on home gateway. In order for us to perform and collect measurements from home gateway, we have proposed and implemented a programmable API that expose a set of simple capabilities. Our experiment management tool is able to use this API to perform a rich set of network measurements. Seattle Testbed currently provides three main API families and supported the types of network measurement(listed in Table 1 and Table 2):
+Our main goal is to provide a wide range of capabilities that support the 
+implementation of a broad range of network measurements on home gateway. In 
+order for us to perform and collect measurements from home gateway, we have 
+proposed and implemented a programmable API that expose a set of simple 
+capabilities. Our experiment management tool is able to use this API to 
+perform a rich set of network measurements. Seattle Testbed currently 
+provides three main API families and supported the types of network 
+measurement(listed in Table 1 and Table 2):
 
 \begin{table*} %[!ht]
 \scriptsize
@@ -86,22 +121,68 @@ Our main goal is to provide a wide range of capabilities that support the implem
 \label{table:type}
 \end{table*}
 
-system provides a python interface to low-level system calls on system. Seattle Testbed sanitizes the call arguments, parsing complex output and return results to the caller. Examples in this family include get\_station and scan implementation. These methods use the iw command-line tool to gather all this information. Researchers are able to study dense WiFi networks by these functions.
+system provides a python interface to low-level system calls on system. 
+Seattle Testbed sanitizes the call arguments, parsing complex output and 
+return results to the caller. Examples in this family include get\_station 
+and scan implementation. These methods use the iw command-line tool to 
+gather all this information. Researchers are able to study dense WiFi 
+networks by these functions.
 
-utils records aggregate network statistics for passively collected data.These methods read directly and parse data from /proc/dev/net. These are able to leverage the naturally-generated network traffic as passive measurements(particularly in the area of broadband characterization) by continuously monitoring the home gateway Internet connection.
 
-network provides low-level measurements functionalities that can be combined to build a wide range of measurement experiments. Current available measurement functions include ping, traceroute, performing DNS lookups, obtaining the local IP address, and sending / receiving TCP and UDP traffic.
+utils records aggregate network statistics for passively collected data.
+These methods read directly and parse data from /proc/dev/net. These are 
+able to leverage the naturally-generated network traffic as passive 
+measurements(particularly in the area of broadband characterization) by 
+continuously monitoring the home gateway Internet connection.
+
+network provides low-level measurements functionalities that can be combined 
+to build a wide range of measurement experiments. Current available 
+measurement functions include ping, traceroute, performing DNS lookups, 
+obtaining the local IP address, and sending / receiving TCP and UDP traffic.
 
 \subsection{Security}
-Seattle nodes are on the direct path of real Internet users, therefore we must ensure Seattle does not allow to risk to the host and network when executing experiments. To do so, Seattle Testbed uses a sandboxed environment for safe execution of external code, performance isolation for programs and traffic containment service. 
+Seattle nodes are on the direct path of real Internet users, therefore we 
+must ensure Seattle does not allow to risk to the host and network when 
+executing experiments. To do so, Seattle Testbed uses a sandboxed 
+environment for safe execution of external code, performance isolation for 
+programs and traffic containment service. 
 
-Safe execution: This is achieved by Repy, which is a subset of the POSIX API constructed with the Restricted Python sandbox. To prevent insecure actions the sandbox hooks into the Python parser and reads the program?s parse tree. Only actions that the sandbox can verify as safe may execute. Repy is highly portable and has been running on a variety of different operating systems over the past five years.
+Safe execution: This is achieved by Repy, which is a subset of the POSIX API 
+constructed with the Restricted Python sandbox. To prevent insecure actions 
+the sandbox hooks into the Python parser and reads the program?s parse tree. 
+Only actions that the sandbox can verify as safe may execute. Repy is highly 
+portable and has been running on a variety of different operating systems 
+over the past five years.
 
-Limit on resource consumption: Seattle carefully control resource consumption on the host and minimize the impacts on the user?s Internet connection. In order to securely interact with home gateway on remote user devices, Seattle uses Fence to allocate a fixed percentage of the device?s CPU, memory disk, and other resources to one or more VMs. As a result, experiment programs are sandboxed and securely isolated from other programs on the same device. 
+Limit on resource consumption: Seattle carefully control resource 
+consumption on the host and minimize the impacts on the user?s Internet 
+connection. In order to securely interact with home gateway on remote user 
+devices, Seattle uses Fence to allocate a fixed percentage of the device?s 
+CPU, memory disk, and other resources to one or more VMs. As a result, 
+experiment programs are sandboxed and securely isolated from other programs 
+on the same device. 
 
-Traffic containment service: Due to seattle allows TCP/UDP socket operation, attackers can exploit the security vulnerability to compromise the computers, printers and other connected devices in home networks. To prevent such actions, there must be restrictions on which hosts testbed nodes can communicate with. Seattle provide a interposition mechanism, which restricts communication between the local node and a remote node based on the destination IP, port, or some combination of the two. 
+Traffic containment service: Due to seattle allows TCP/UDP socket operation, 
+attackers can exploit the security vulnerability to compromise the 
+computers, printers and other connected devices in home networks. To prevent 
+such actions, there must be restrictions on which hosts testbed nodes can 
+communicate with. Seattle provide a interposition mechanism, which restricts 
+communication between the local node and a remote node based on the 
+destination IP, port, or some combination of the two. 
 
 \subsection{Privacy}
-Although a rich set of capabilities enhance the convenience of user interfaces and application usefulness, they also raise serious privacy concerns. For example, network traffic volume over interface and the information of connected devices in home networks produce a rich history, it will lead to behaviour prediction, such information invades user privacy. 
+Although a rich set of capabilities enhance the convenience of user 
+interfaces and application usefulness, they also raise serious privacy 
+concerns. For example, network traffic volume over interface and the 
+information of connected devices in home networks produce a rich history, it 
+will lead to behaviour prediction, such information invades user privacy. 
 
-In order not to allow measurements to exfiltrate sensitive information from home gateway, Seattle provides a framework of reference monitor, to enforce mandatory access control to sensitive data in real time. Based on the type of network measurements, the capabilities can be passed through, filtered, or dropped by the reference monitor. For a user who wants to learn about Internet censorship , a filter might perform an action such as removing access point information from WiFi scans and network traffic volume information in home networks, only allow to access ping and traceroute functionality.
+In order not to allow measurements to exfiltrate sensitive information from 
+home gateway, Seattle provides a framework of reference monitor, to enforce 
+mandatory access control to sensitive data in real time. Based on the type 
+of network measurements, the capabilities can be passed through, filtered, 
+or dropped by the reference monitor. For a user who wants to learn about 
+Internet censorship , a filter might perform an action such as removing 
+access point information from WiFi scans and network traffic volume 
+information in home networks, only allow to access ping and traceroute 
+functionality.

@@ -1,13 +1,56 @@
 \section{Introduction}
 \label{sec.introduction}
-As home broadband Internet access is rapidly evolving, broadband networks have attracted interests from researchers, policy makers and Internet Service Providers(ISPs). The United States alone has more than 279 million broadband users and number of Internet users in other regions are even more impressive: China has more than 641 million Internet users and other developing countries are seeing increased growth. Despite their pervasiveness, little is known about most home networks hampers progress in a number of important research areas, from ISP performance to large-scale topology mapping and home network usage.
+As home broadband Internet access is rapidly evolving, broadband networks 
+have attracted interests from researchers, policy makers and Internet 
+Service Providers(ISPs). The United States alone has more than 279 million 
+broadband users and number of Internet users in other regions are even more 
+impressive: China has more than 641 million Internet users and other 
+developing countries are seeing increased growth. Despite their 
+pervasiveness, little is known about most home networks hampers progress in 
+a number of important research areas, from ISP performance to large-scale 
+topology mapping and home network usage.
 
-Currently it has been difficult to study home networks on a large scale because network technologies like network address translators (NATs) present only an opaque view of the home network to the global Internet. To better understand home networks, an experimental platform should be hosted in home networks, to provide visibility into the missing part of Internet. Such a platform also should provide a set of APIs that support the implementation of as wide an array of measurement as possible without compromising the privacy of the user and abuse of host or network resources. 
+Currently it has been difficult to study home networks on a large scale 
+because network technologies like network address translators (NATs) present 
+only an opaque view of the home network to the global Internet. To better 
+understand home networks, an experimental platform should be hosted in home 
+networks, to provide visibility into the missing part of Internet. Such a 
+platform also should provide a set of APIs that support the implementation 
+of as wide an array of measurement as possible without compromising the 
+privacy of the user and abuse of host or network resources. 
 
-Today's measurement and experimentation platform for home networks such as BISmark, Samknows and Dasu all support controlled network experimentation and broadband characterization. However, the process of vetting BISmark experiments is manual, which will be a limiting factor as the deployment grows. SamKnows has deployed thousands of home routers in the US and the UK, but only supports limited performance measurements. Dasu is a host-based software client, thus it is not able to run certain measurements due to application restriction and cannot run continuous measurements(i.e., since hosts can be turned off, moved, etc.)
+Today's measurement and experimentation platform for home networks such as 
+BISmark, Samknows and Dasu all support controlled network experimentation 
+and broadband characterization. However, the process of vetting BISmark 
+experiments is manual, which will be a limiting factor as the deployment 
+grows. SamKnows has deployed thousands of home routers in the US and the UK, 
+but only supports limited performance measurements. Dasu is a host-based 
+software client, thus it is not able to run certain measurements due to 
+application restriction and cannot run continuous measurements(i.e., since 
+hosts can be turned off, moved, etc.)
  
-To address these issues, we developed Seattle Testbed, an open research and educational testbed that implements a number of measurements primitives that enable researchers, policy makers and Internet Service Providers (ISPs) to program network measurements. To ensure safety, Seattle supports a very flexible language for experiment specification based on Repy which is lightweight, python based, performance isolation and extensible programming language. It provides researchers with the ability to install sandboxed measurement applications on the home gateway. 
+To address these issues, we developed Seattle Testbed, an open research and 
+educational testbed that implements a number of measurements primitives that 
+enable researchers, policy makers and Internet Service Providers (ISPs) to 
+program network measurements. To ensure safety, Seattle supports a very 
+flexible language for experiment specification based on Repy which is 
+lightweight, python based, performance isolation and extensible programming 
+language. It provides researchers with the ability to install sandboxed 
+measurement applications on the home gateway. 
 
-Both strengths and challenges of a platform like Seattle Testbed stem from its inclusion of measurement nodes on the home gateway. First, each nodes must be small and easy-to-deploy because Seattle is deployed on resource-constrained devices. Second, Seattle nodes are on the direct path of real Internet users.Thus it must guarantee the safety of the volunteer nodes. Third, it is important to make system robustness, remote maintenance and update because of the unmanaged complexity of its home network environments. Finally, Seattle must provide a rich set of APIs for different network measurements.
+Both strengths and challenges of a platform like Seattle Testbed stem from 
+its inclusion of measurement nodes on the home gateway. First, each nodes 
+must be small and easy-to-deploy because Seattle is deployed on resource-
+constrained devices. Second, Seattle nodes are on the direct path of real 
+Internet users.Thus it must guarantee the safety of the volunteer nodes. 
+Third, it is important to make system robustness, remote maintenance and 
+update because of the unmanaged complexity of its home network environments. 
+Finally, Seattle must provide a rich set of APIs for different network 
+measurements.
 
-In this paper, we introduce Seattle Testbed, a distributed cloud platform that allows researchers to run their project on system worldwide. This testbed provides secure data access while preserving user privacy. Through a programmable interface on device, the testbed enables researchers to deploy a wide range of network measurements. We also discusses the constraints we faced in the design, implementation and deployment of Seattle.
+In this paper, we introduce Seattle Testbed, a distributed cloud platform 
+that allows researchers to run their project on system worldwide. This 
+testbed provides secure data access while preserving user privacy. Through a 
+programmable interface on device, the testbed enables researchers to deploy 
+a wide range of network measurements. We also discusses the constraints we 
+faced in the design, implementation and deployment of Seattle.

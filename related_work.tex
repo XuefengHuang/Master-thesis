@@ -1,15 +1,67 @@
 \section{Related Work}
 \label{sec.related_work}
-Our work shares goals with and builds upon ideas from several prior large-scale platforms targeting home network research.In the following paragraphs, we briefly review related works on network testbed. 
+Our work shares goals with and builds upon ideas from several prior large-
+scale platforms targeting home network research.In the following paragraphs, 
+we briefly review related works on network testbed. 
 \begin{itemize}
-\item \textbf{BISmark} is similar to Seattle in that it is deployed in home networks on resource-constrained devices. And currently it is used and shared by researchers at nine institutions, including commercial Internet service providers, and has enabled studies of access link performance, network connectivity, Web page load times, and user behavior and activity. However, vetting experiments is challenging. A poorly designed (or controlled) experiment can cripple a user?s Internet connection. Seattle is supported to run arbitrary codes on remote devices without compromising the security and privacy of device owners.
-\item \textbf{Samknows} has designed and developed its performance tests in house, adhering to IETF RFCs where appropriate. All measurements are written in C, for performance and portability across a range of hardware platforms. But it only supports limited performance measurements. Seattle supports a very flexible language for experiment specification based on a restricted subset of Python.
-\item \textbf{The RIPE Atlas project} is a global network of probes that measure Internet connectivity and reachability, providing an unprecedented understanding of the state of the Internet in real time. It has deployed thousands of probing devices worldwide, but their capabilities are limited to simple measurements (e.g., ping, traceroute). Seattle instead provides a wide range of capabilities to support complex measurements. 
-\item \textbf{Dasu} is a measurement experimentation platform for the Internet edge, It supports both controlled network experimentation and broadband characterization. But it is not able to run a range of  measurements due to its capabilities are limited and cannot run continuous measurements (i.e. , since hosts can be turned off, moved, etc.).
-\item \textbf{Scriptroute} provides a safe, publicly-available network probe execution environment, but ScriptRoute hasn?t been updated in a few years. Furthermore, it doesn?t support IPv6 and TCP options. Currently, Seattle not only engage in research projects, but also  allow students to get practical experience with real-world end user networks.
+\item \textbf{BISmark} is similar to Seattle in that it is deployed in home 
+networks on resource-constrained devices. And currently it is used and 
+shared by researchers at nine institutions, including commercial Internet 
+service providers, and has enabled studies of access link performance, 
+network connectivity, Web page load times, and user behavior and activity. 
+However, vetting experiments is challenging. A poorly designed (or controlled
+) experiment can cripple a user?s Internet connection. Seattle is supported 
+to run arbitrary codes on remote devices without compromising the security 
+and privacy of device owners.
+\item \textbf{Samknows} has designed and developed its performance tests in 
+house, adhering to IETF RFCs where appropriate. All measurements are written 
+in C, for performance and portability across a range of hardware platforms. 
+But it only supports limited performance measurements. Seattle supports a 
+very flexible language for experiment specification based on a restricted 
+subset of Python.
+\item \textbf{The RIPE Atlas project} is a global network of probes that 
+measure Internet connectivity and reachability, providing an unprecedented 
+understanding of the state of the Internet in real time. It has deployed 
+thousands of probing devices worldwide, but their capabilities are limited 
+to simple measurements (e.g., ping, traceroute). Seattle instead provides a 
+wide range of capabilities to support complex measurements. 
+\item \textbf{Dasu} is a measurement experimentation platform for the 
+Internet edge, It supports both controlled network experimentation and 
+broadband characterization. But it is not able to run a range of  
+measurements due to its capabilities are limited and cannot run continuous 
+measurements (i.e. , since hosts can be turned off, moved, etc.).
+\item \textbf{Scriptroute} provides a safe, publicly-available network probe 
+execution environment, but ScriptRoute hasn?t been updated in a few years. 
+Furthermore, it doesn?t support IPv6 and TCP options. Currently, Seattle not 
+only engage in research projects, but also  allow students to get practical 
+experience with real-world end user networks.
 
-\item \textbf{Fathom} project explores the browser as a platform for network measurement and troubleshooting. It provides a wide range of networking primitives directly to in-page javaScript. You get direct TCP/UDP socket access, higher-level protocol APIs such as DNS, HTTP, and UPnP, and ready-made functionality such as pings and traceroute. However, the measurements are not continuous(i.e. , since browser can be turned off, etc.). Seattle instead is deployed on home routers so that measurements are continuous, direct and comprehensive.
-\item \textbf{HomeNet Profiler} is a software that runs on any computer connected inside a home network, to collect a wide range of measurements about networks including the set of devices, the set of services and the characteristics of the WiFi environment. But due to it lacks programming interface so HomeNet Profiler is not flexible. Its measurements are also not continuous. Seattle not only support these capabilities HomeNet Profiler has, but also allow more measurement primitives(traceroute, ping, etc...) while preserving security and privacy.
-\item \textbf{Google Analytics} is an enterprise-class based web analytics tool which provides a transparent view of website traffic and marketing effectiveness. Google Analytics has powerful and advance features that give rich insight into the websites and improve website ROI (Return on Investment). But it only supports limited website performance measurements.
-\item \textbf{IETF's LMAP} is a desire to be able to coordinate the execution of broadband measurements and the collection of measurement results across a large scale set of Measurement Agents (MAs). These MAs could be in every home gateway and edge device such as set-top boxes and tablet computers, and located throughout the Internet as well. The measurement system is under the direction of a single organisation and each MA may only have a single Controller at any point in time.
+\item \textbf{Fathom} project explores the browser as a platform for network 
+measurement and troubleshooting. It provides a wide range of networking 
+primitives directly to in-page javaScript. You get direct TCP/UDP socket 
+access, higher-level protocol APIs such as DNS, HTTP, and UPnP, and ready-
+made functionality such as pings and traceroute. However, the measurements 
+are not continuous(i.e. , since browser can be turned off, etc.). Seattle 
+instead is deployed on home routers so that measurements are continuous, 
+direct and comprehensive.
+\item \textbf{HomeNet Profiler} is a software that runs on any computer 
+connected inside a home network, to collect a wide range of measurements 
+about networks including the set of devices, the set of services and the 
+characteristics of the WiFi environment. But due to it lacks programming 
+interface so HomeNet Profiler is not flexible. Its measurements are also not 
+continuous. Seattle not only support these capabilities HomeNet Profiler 
+has, but also allow more measurement primitives(traceroute, ping, etc...) 
+while preserving security and privacy.
+\item \textbf{Google Analytics} is an enterprise-class based web analytics 
+tool which provides a transparent view of website traffic and marketing 
+effectiveness. Google Analytics has powerful and advance features that give 
+rich insight into the websites and improve website ROI (Return on Investment)
+. But it only supports limited website performance measurements.
+\item \textbf{IETF's LMAP} is a desire to be able to coordinate the 
+execution of broadband measurements and the collection of measurement 
+results across a large scale set of Measurement Agents (MAs). These MAs 
+could be in every home gateway and edge device such as set-top boxes and 
+tablet computers, and located throughout the Internet as well. The 
+measurement system is under the direction of a single organisation and each 
+MA may only have a single Controller at any point in time.
 \end{itemize}
