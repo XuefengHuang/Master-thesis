@@ -17,16 +17,16 @@ Today's poor visibility into the home network hampers progress in a number
 of important research areas, from WiFi management strategies to broadband 
 characterization. Several related works have been worked on deploying 
 measurements and applications in broadband access networks. However, they 
-have several security issues that might compromise user?s privacy. Seattle 
+have several security issues that might compromise user's privacy. Seattle 
 allows untrusted parties to run arbitrary codes on our platform. Different 
-from the existing network testbeds, Seattle provides a programmable resource 
-and privacy protection framework. A user can let a third party have access 
-to their network traffic data within a security and performance isolated 
-virtual machine. Users not only are able to control how much information 
-they would share with the rest of world, but also decide how many resources 
-an application can use. For example, an experiment could be prevented when 
-consuming so much resources or access some interfaces which are not allowed 
-by device's owner. 
+from the existing network testbeds, Seattle provides a programmable 
+interface and resource protection framework. A user can let a third party 
+have access to their network traffic data within a security and performance 
+isolated virtual machine. Users not only are able to control how much 
+information they would share with the rest of world, but also decide how 
+many resources an application can use. For example, an experiment could be 
+prevented when consuming so much resources or access some interfaces which 
+are not allowed by device's owner. 
 
 Seattle is composed of three separate parts: router owner, clearinghouse and 
 researcher. Router owner donates computational resources to our platform, 
@@ -36,7 +36,7 @@ seeking to run experiments on remote router.
 Before conducting any network measurement experiments, owner first downloads 
 installer package from clearinghouse which is a testbed server that keep 
 track of routers and allow researcher to access available routers. To run 
-codes on owner?s router, researchers needs to download an experiment manager 
+codes on owner's router, researchers needs to download an experiment manager 
 to his own laptop. Researcher uses the experiment manager to access the 
 remote router directly, upload experiment codes and start or stop the 
 execution of the experiment.
@@ -49,7 +49,7 @@ proposed and implemented a programmable API that expose a set of simple
 capabilities. Our experiment management tool is able to use this API to 
 perform a rich set of network measurements. Seattle Testbed currently 
 provides three main API families and supported the types of network 
-measurement(listed in Table 1 and Table 2):
+measurement (listed in Table 1 and Table 2):
 
 \begin{table*} %[!ht]
 \scriptsize
@@ -61,13 +61,13 @@ measurement(listed in Table 1 and Table 2):
  \hline
  {\bf system.scan} & {\bf Collect the list of access points found with a WiFi scan. For each access point we collect BSSID, SSID, signal strength and channel number.} \\
 \hline
- {\bf system.get\_station} & {\bf Record downlink statistics per associated client(e.g., Total packets sent, received, retried, client?s signal strength at home wireless router).} \\
+ {\bf system.get\_station} & {\bf Record downlink statistics per associated client (e.g., Total packets sent, received, retried, client's signal strength at home wireless router).} \\
 \hline
  {\bf utils.get\_network\_interface} & {\bf Return a list of available network interfaces.} \\
 \hline
- {\bf utils.get\_network\_bytes} & {\bf Record information about the configured network interfaces.The statistics include metrics such total number of received/transmitted bytes, drops, errors.} \\
+ {\bf utils.get\_network\_bytes} & {\bf Record information about the configured network interfaces. The statistics include metrics such total number of received or transmitted bytes, drops, errors.} \\
 \hline
- {\bf utils.get\_network\_packets} & {\bf Record information about the configured network interfaces.The statistics include metrics such total number of received/transmitted packets, drops, errors.} \\
+ {\bf utils.get\_network\_packets} & {\bf Record information about the configured network interfaces. The statistics include metrics such total number of received or transmitted packets, drops, errors.} \\
 \hline
  {\bf network.ping} & {\bf A pure python ping implementation using raw sockets.} \\
 \hline
@@ -77,7 +77,7 @@ measurement(listed in Table 1 and Table 2):
 \hline
  {\bf network.udp} & {\bf Send or receive UDP traffic.} \\
 \hline
- {\bf network.getmyip} & {\bf Returns the localhost's "Internet facing" IP address.} \\
+ {\bf network.getmyip} & {\bf Returns the localhost's \"Internet facing\" IP address.} \\
 \hline
  {\bf network.dns} & {\bf Perform DNS lookups} \\
 \hline
@@ -121,24 +121,24 @@ measurement(listed in Table 1 and Table 2):
 \label{table:type}
 \end{table*}
 
-system provides a python interface to low-level system calls on system. 
-Seattle Testbed sanitizes the call arguments, parsing complex output and 
+\emph{system} provides a python interface to low-level system calls on system
+. Seattle Testbed sanitizes the call arguments, parsing complex output and 
 return results to the caller. Examples in this family include get\_station 
-and scan implementation. These methods use the iw command-line tool to 
-gather all this information. Researchers are able to study dense WiFi 
+and scan implementation. These methods use the iw command-line tool 
+to gather all this information. Researchers are able to study dense WiFi 
 networks by these functions.
 
 
-utils records aggregate network statistics for passively collected data.
-These methods read directly and parse data from /proc/dev/net. These are 
-able to leverage the naturally-generated network traffic as passive 
-measurements(particularly in the area of broadband characterization) by 
-continuously monitoring the home gateway Internet connection.
+\emph{utils} records aggregate network statistics for passively collected 
+data. These methods read directly and parse data from \emph{/proc/dev/net}. 
+These are able to leverage the naturally-generated network traffic as 
+passive measurements (particularly in the area of broadband characterization)
+by continuously monitoring the home gateway Internet connection.
 
-network provides low-level measurements functionalities that can be combined 
-to build a wide range of measurement experiments. Current available 
+\emph{network} provides low-level measurements functionalities that can be 
+combined to build a wide range of measurement experiments. Current available 
 measurement functions include ping, traceroute, performing DNS lookups, 
-obtaining the local IP address, and sending / receiving TCP and UDP traffic.
+obtaining the local IP address, and sending or receiving TCP and UDP traffic.
 
 \subsection{Security}
 Seattle nodes are on the direct path of real Internet users, therefore we 
@@ -149,15 +149,15 @@ programs and traffic containment service.
 
 Safe execution: This is achieved by Repy, which is a subset of the POSIX API 
 constructed with the Restricted Python sandbox. To prevent insecure actions 
-the sandbox hooks into the Python parser and reads the program?s parse tree. 
+the sandbox hooks into the Python parser and reads the program's parse tree. 
 Only actions that the sandbox can verify as safe may execute. Repy is highly 
 portable and has been running on a variety of different operating systems 
 over the past five years.
 
 Limit on resource consumption: Seattle carefully control resource 
-consumption on the host and minimize the impacts on the user?s Internet 
+consumption on the host and minimize the impacts on the user's Internet 
 connection. In order to securely interact with home gateway on remote user 
-devices, Seattle uses Fence to allocate a fixed percentage of the device?s 
+devices, Seattle uses Fence to allocate a fixed percentage of the device's 
 CPU, memory disk, and other resources to one or more VMs. As a result, 
 experiment programs are sandboxed and securely isolated from other programs 
 on the same device. 
@@ -182,7 +182,7 @@ home gateway, Seattle provides a framework of reference monitor, to enforce
 mandatory access control to sensitive data in real time. Based on the type 
 of network measurements, the capabilities can be passed through, filtered, 
 or dropped by the reference monitor. For a user who wants to learn about 
-Internet censorship , a filter might perform an action such as removing 
+Internet censorship, a filter might perform an action such as removing 
 access point information from WiFi scans and network traffic volume 
 information in home networks, only allow to access ping and traceroute 
 functionality.
