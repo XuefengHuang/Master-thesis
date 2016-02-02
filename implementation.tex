@@ -21,8 +21,9 @@ measurements.
 
 \subsection{Implementation Details}
 \textbf{Seattle porting onto home wireless router:} 
-Seattle is a platform for networking and distributed systems research. It 
-supports a wide range of devices including desktop, laptop, servers, etc.
+Seattle is a platform for networking and distributed systems 
+research. It supports a wide range of devices including desktop, laptop, 
+servers, etc.
 
 Compared to desktop and laptop environments, deployment on home wireless 
 router has more resource limitation such as restricted computational 
@@ -44,3 +45,15 @@ Seattle also provides a framework of reference monitor, to enforce mandatory
 access control to sensitive data in real time. Based on the type of network 
 measurement experiment, the data returned by the embedded devices can be 
 passed through, filtered, or dropped by the reference monitor.
+
+\subsection{Deployment}
+Deploying Seattle Testbed in a real-world setting is essential to study and 
+evaluate bandwidth performance and wireless performance under the conditions 
+found in a real network (client diversity, mobility, interference with 
+neighboring networks). For our study, we deploy TP-Link TL-WDR3600 router, 
+which has a 560 MHz MIPS processor, 8MB of flash storage, 128MB of RAM and a 
+dual-band wireless interface. We replace the router’s default software with 
+a custom version of OpenWrt Linux~\cite{openwrt}. Some users can download 
+the Seattle package from our project page and install it on their own 
+hardware via opkg package manager.
+

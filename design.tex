@@ -12,21 +12,30 @@ In this section, we use this idea to guild our new design for building
 secure network testbed. Our goal is to allow researchers to run texperiments 
 while reducing the risk of security and privacy problem.
 
-\subsection{Architecture Design}
+\subsection{Overview}
 Today's poor visibility into the home network hampers progress in a number 
 of important research areas, from WiFi management strategies to broadband 
-characterization. Several related works have been worked on deploying 
-measurements and applications in broadband access networks. However, they 
-have several security issues that might compromise user's privacy. Seattle 
-allows untrusted parties to run arbitrary codes on our platform. Different 
-from the existing network testbeds, Seattle provides a programmable 
-interface and resource protection framework. A user can let a third party 
-have access to their network traffic data within a security and performance 
-isolated virtual machine. Users not only are able to control how much 
-information they would share with the rest of world, but also decide how 
-many resources an application can use. For example, an experiment could be 
-prevented when consuming so much resources or access some interfaces which 
-are not allowed by device's owner. 
+characterization. Previous works~\cite{sanchez2014measurement}~\cite{
+dhawan2012fathom} usually provides a programmable interface for writing and 
+launching measurements from the perspective of end systems. Our proposed 
+approach in supporting a wide range of measurements is using a programmable 
+interface as well. Unlike such prior network measurement efforts, our work 
+places network measurement capabilities embedded into home gateway. This 
+approach has various unique advantages: (i) our platform is able to observe 
+all traffic to and from its clients without missing any network traffic. (ii)
+home gateway is “demarcation point” between the home wireless network and 
+the access link so that it is the best place to learn about wired and 
+wireless network. Although BISmark~\cite{183951} has been worked on 
+deploying measurements  through the long-term deployment of gateways in 
+homes, it has several security issues that might cripple a user\’s Internet 
+connection. Seattle instead allows untrusted parties to run arbitrary codes 
+on our platform via a programmable interface and resource protection 
+framework. A user can let a third party have access to their network traffic 
+data within a security and performance isolated virtual machine. Users not 
+only are able to control how much information they would share with the rest 
+of world, but also decide how many resources an application can use. For 
+example, an experiment could be prevented when consuming so much resources 
+or access some interfaces which are not allowed by device\'s owner. 
 
 Seattle is composed of three separate parts: router owner, clearinghouse and 
 researcher. Router owner donates computational resources to our platform, 
@@ -157,10 +166,10 @@ over the past five years.
 Limit on resource consumption: Seattle carefully control resource 
 consumption on the host and minimize the impacts on the user's Internet 
 connection. In order to securely interact with home gateway on remote user 
-devices, Seattle uses Fence to allocate a fixed percentage of the device's 
-CPU, memory disk, and other resources to one or more VMs. As a result, 
-experiment programs are sandboxed and securely isolated from other programs 
-on the same device. 
+devices, Seattle uses Fence~\cite{li2015fence} to allocate a fixed 
+percentage of the device's CPU, memory disk, and other resources to one or 
+more VMs. As a result, experiment programs are sandboxed and securely 
+isolated from other programs on the same device. 
 
 Traffic containment service: Due to seattle allows TCP/UDP socket operation, 
 attackers can exploit the security vulnerability to compromise the 
@@ -178,11 +187,11 @@ information of connected devices in home networks produce a rich history, it
 will lead to behaviour prediction, such information invades user privacy. 
 
 In order not to allow measurements to exfiltrate sensitive information from 
-home gateway, Seattle provides a framework of reference monitor, to enforce 
-mandatory access control to sensitive data in real time. Based on the type 
-of network measurements, the capabilities can be passed through, filtered, 
-or dropped by the reference monitor. For a user who wants to learn about 
-Internet censorship, a filter might perform an action such as removing 
+home gateway, Seattle provides a framework of reference monitor~\cite{ref}, 
+to enforce mandatory access control to sensitive data in real time. Based on 
+the type of network measurements, the capabilities can be passed through, 
+filtered, or dropped by the reference monitor. For a user who wants to learn 
+about Internet censorship, a filter might perform an action such as removing 
 access point information from WiFi scans and network traffic volume 
 information in home networks, only allow to access ping and traceroute 
 functionality.
