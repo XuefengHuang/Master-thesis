@@ -4,9 +4,7 @@
 \usepackage{graphicx}				% Use pdf, png, jpg, or eps§ with pdflatex; use eps in DVI mode
 \usepackage{array}
 \usepackage{cite}
-%SetFonts
-
-%SetFonts
+\usepackage{hyperref}
 
 
 \title{An experimental platform for home wireless router}
@@ -19,7 +17,7 @@ As one of the most economically significant and fastest growing sectors of the I
 \end{abstract}
 %\section{}
 %\subsection{}
-\section{Seattle Platform}
+\section{Introduction}
 Currently it has been difficult to study home networks on a large scale because network technologies like network address translators (NATs) present only an opaque view of the home network to the global Internet. To better understand home networks, an experimental platform should be hosted in home networks, to provide visibility into the missing part of Internet. While previous works\cite{183951} have studied access networks from home gateway, they are unable to let researchers run arbitrary codes without compromising the privacy of the user and abuse of host or network resources. We present Seattle, a platform for measurement experimentation from home gateway. Seattle is able to deploy in home wireless router so that it is capable of running both active and passive experiments from a vantage point between the access ISP and the home network, as shown in Fig. 1.
 \newline
 In this paper, we introduce Seattle Testbed\cite{cappos2009seattle}, a distributed cloud platform that allows researchers to run their project on system worldwide. This testbed provides secure data access while preserving user privacy. Through a programmable interface on device, the testbed enables researchers to deploy a wide range of network measurements. We also discuss the constraints we faced in the design, implementation and deployment of Seattle.
@@ -34,13 +32,19 @@ In this paper, we introduce Seattle Testbed\cite{cappos2009seattle}, a distribut
 \section{CHALLENGES AND CONTRIBUTIONS}
 \label{sec.design}
 \subsection{Challenges}
-A testbed that allows researchers to execute code across donated embedded devices faces four major challenges: First, the embedded devices poses a limited resources challenge - it is hard to run heavy scripting languages like Python or Ruby. The second challenge is user's networking experience. Seattle nodes are on the direct path of real Internet users. A malicious network measurement experiment will noticeably affect a normal user's network experience. The third challenge is secure data access - network traffic data pose a risk to device donors whose devices are exposed to malicious code written by users. The fourth challenge is data privacy - users should not gain access to information that donors don't want to share. As the development of hardware technology and based on our practical experience, running Python codes are going well on embedded devices. And the last three challenges can be solved via using a secure and performance-isolated sandbox and a reference monitor framework we proposed.
-
+A testbed that allows researchers to execute code across donated embedded devices faces four major challenges: 
+\begin{itemize}
+\item First, the embedded devices poses a limited resources challenge. It is hard to run heavy scripting languages like Python or Ruby. 
+\item The second challenge is user's networking experience. Seattle nodes are on the direct path of real Internet users. A malicious network measurement experiment will noticeably affect a normal user's network experience. 
+\item The third challenge is secure data access. Network traffic data pose a risk to device donors whose devices are exposed to malicious code written by users. 
+\item The fourth challenge is data privacy. Users should not gain access to information that donors don't want to share.
+\end{itemize}
+As the development of hardware technology and based on our practical experience, running Python codes are going well on embedded devices. And the last three challenges can be solved via using a secure and performance-isolated sandbox and a reference monitor framework we proposed.
 \subsection{Contributions}
 \textit{1) Home routers platform:} This platform is based on Seattle\cite{zhuang2013experience}, a community-driven, open-source cloud computing system. Compared to computer and mobile device environments, deployment on home wireless router has more resource limitation such as restricted computational resources. However, recently we are able to port Seattle to embedded devices. Users can build their own Seattle installer (IPK) via config file we provide using OpenWrt SDK and install it on the device directly. Currently, I deploy this platform in TP-Link TL-WDR3600 router, which has a 560 MHz MIPS processor, 8MB of flash storage, 128MB of RAM and a dual-band wireless interface.
 \newline
 
-\textit{2) New capabilities for home routers:}  Our testbed implements new research capabilities by improving on the Seattle sandbox. To handle home routers, our testbed uses low-level system calls in the OpenWrt platform\cite{openwrt} with the Restriction Python (Repy)\cite{cappos2010retaining}, the core sandbox of Seattle. In order to securely interact with home routers on remote user devices, we use Fence~\cite{li2015fence} to allocate a fixed percentage of the device's CPU, memory disk, and other resources to one or more VMs. For example, we set the legal times of accessing proc file system to prevent Dos attack using our API calls. Our testbed adds seven functionalities based on Repy, as shown in in Table 1. Through these new functionalities I proposed, researchers are able to implement a wide range of network measurements, as shown in in Table 2.
+\textit{2) Extensions to Seattle Testbed:}  Our testbed implements new research capabilities for home wireless router by improving on the Seattle sandbox. To handle home wireless routers, our testbed uses low-level system calls in the OpenWrt platform\cite{openwrt} with the Restriction Python (Repy)\cite{cappos2010retaining}, the core sandbox of Seattle. In order to securely interact with home routers on remote user devices, we use Fence~\cite{li2015fence} to allocate a fixed percentage of the device's CPU, memory disk, and other resources to one or more VMs. For example, we set the legal times of accessing proc file system to prevent Dos attack using our API calls. Our testbed adds seven functionalities based on Repy, as shown in in Table 1. Through these new functionalities I proposed, researchers are able to implement a wide range of network measurements, as shown in in Table 2.
 \newline
 
 \begin{table}
@@ -86,13 +90,12 @@ client\'s signal strength at AP)\newline neighboring APs information} & {\bf Hom
 \label{table:experiment}
 \end{table}
 
-\textit{3) Experimental Characterization of home wireless networks: } By integrating Seattle with the home network, we get the benefits of a real world deployment while ensuring flexibility to run experiments without compromising home network. We collect the timestamp and size of packets flowed to and from the Internet. Although this data seems fairly insignificant, traffic analysis could in fact provide rich insights into user behaviour inside the home. 
+\textit{3) Experimental Characterization of home wireless networks: } By integrating Seattle with the home network, we get the benefits of a real world deployment while ensuring flexibility to run experiments without compromising home network. We demonstrate Seattle's utility by implementing one example usage case that together exercise different new API calls: monitoring how busy the WiFi channels in a place over one or two weeks. Our goal is to illustrate how Seattle can support disparate measurement needs.
 
 \section{STATUS AND FUTURE WORK}
-We have currently deployed Seattle in a router in the NYU lab. This device is added to Poly VlAN 147. We are currently studying the network traffic of home networks. Our plan is to analyze
-the periodicity of usage patterns in various home networks. The data we collect will include aggregated traffic information and timestamp. I have ran a experiment to collect data using Seattle in the home wireless router. However, due to the issue\cite{gettid_issue} about GETTID doesn't work in OpenWrt, I only can get aggregated traffic information. 
-
-
+We have currently deployed Seattle in a router in the NYU lab. This device is added to Poly VlAN 147. Instead of traditional installer, Seattle is able to be installed via OPKG package manager\cite{opkg}\cite{seattle-openwrt}. It is better to resolve dependencies with packages in the repositories. In order to let Seattle group members test these new capabilities in home wireless router easily, I provided documentation and some example programs\cite{test}. Currently. those new API calls work fine form group members' feedback. I am currently studying the network traffic of home networks. Our plan is to analyze the periodicity of usage patterns in various home networks. The data we collect will include aggregated traffic information and timestamp. I have ran an experiment to collect data using Seattle in the home wireless router. However, due to the issue\cite{gettid_issue} about GETTID doesn't work in OpenWrt, I only can get aggregated traffic information.
+\newline
+In few weeks, I will fix unsolved issue first and then demonstrate its utility in one study: monitoring how busy the WiFi channels in a place over one or two weeks. This study can give researchers a good example to help them to write and launch their own measurements. I am currently writing my master thesis draft, it includes five sections: introduction, challenges and contributions, related work, a secure network testbed design, implementation. After obtaining actual experiment result, I will start working on evaluation and conclusion section.
 
 \bibliographystyle{plain}
 \bibliography{thesis}
