@@ -1,0 +1,115 @@
+\section{Background and Motivation}
+\label{sec.background_motivation}
+In this section, we present some background information on factors that shaped the design and deployment of Seattle Testbed. First, we provide the related works behind its design. Then, we come up with design goals for a home wireless router based network measurement platform. Next, we discuss some of the key issues and  challenges in designing and implementing such platform. Finally, we look at the threat model of a programming interface for home wireless router based network measurement platform.
+
+\subsection{Related Work}
+\label{ssec.related_work}
+Our work shares goals with and builds upon ideas from several prior large-
+scale platforms targeting home network research. In the following paragraphs, we briefly review related works on network testbed. 
+
+The BISmark~\cite{183951} project aims at understanding the performance of 
+wired access networks in homes through the long-term deployment of gateways. 
+We use a similar approach but focus on building a programming framework to 
+balance between flexibility (allowing researchers to do a wide set of 
+experiments) and a constrained programming environment (limiting researchers 
+from doing experiments that could interfere with home users). The RIPE Atlas~\cite{ripeatlas} is a global network of probes that measure Internet 
+connectivity and reachability, providing an unprecedented understanding of 
+the state of the Internet in real time. It has deployed thousands of probing 
+devices worldwide, but their capabilities are limited to simple measurements 
+(e.g., ping, traceroute). Our testbed provide a wide range of capabilities 
+that support the implementation of as wide an array of network measurements 
+as possible. SamKnows~\cite{samknows} has designed and developed its 
+performance tests in house, adhering to IETF RFCs where appropriate. All 
+measurements are written in C, for performance and portability across a 
+range of hardware platforms. But it cannot adapt their measurements 
+procedure and software in the course of a measurement study. Seattle instead 
+allows for very general programmability and rapid code updates on wireless 
+router. BeHop~\cite{yiakoumis2014behop} is a wireless testbed for dense WiFi 
+networks often seen in residential and enterprise settings. Seattle not only 
+evaluate WiFi management strategy, but also study different aspects of home 
+networks, including access link performance, user behavior patterns and 
+topology and connectivity characterization. WiSe~\cite{patro2013observing} 
+is a measurement and management infrastructure that uses APs as vantage 
+points to collect comprehensive information about network. However, WiSe 
+focuses solely on the wireless network properties and not on the rest of the 
+ISP path. Seattle instead focus on both characterization of the wired 
+Internet path from the ISP’s network into the home and the wireless network 
+properties.
+
+Prior works such as~\cite{sanchez2014measurement},~\cite{dhawan2012fathom}
+,~\cite{kreibich2010netalyzr} has focused on end-host techniques for 
+measuring end to end performance in home networks. Dasu~\cite{
+sanchez2014measurement} is a host-based software that analyzes BitTorrent 
+traffic to characterize ISP performance. Because Dasu piggybacks on 
+BitTorrent, it has a large user base.Fathom~\cite{dhawan2012fathom} is a 
+Firefox extension that provides a programmable interface for writing and 
+launching measurements from the convenience of the web browser. Netalzyr~\cite{kreibich2010netalyzr} also lets users conduct a series of tests from a 
+browser. However, these testbeds cannot support for continuous measurements (
+i.e., since hosts can be turned off, moved, etc.). In additional, they do 
+not reflect the performance of a fixed network vantage point due to the 
+limitation of host.
+
+Most active measurement and experimentation research relies on dedicated infrastructures (PlanetLab~\cite{chun2003planetlab}, MLab~\cite{mlab}). However, such infrastructures support long-running measurements at cost of limited vantage point diversity because nodes primarily deployed in well-provisioned academic or research networks which are not representative of the real users' Internet. In Seattle, experiments can observe all traffic passing through home wireless router. Scriptroute~\cite{spring2003scriptroute} added the capability for any researchers to run experiments using scripts in a sandboxed environment in PlanetLab. We share Scriptroute's goal of building a community platform for network measurements. However, Seattle is intended for large scale deployment on home wireless routers brings new challenges in particular: resource limitations and home network security.
+
+\subsection{Goals}
+\label{ssec.goals}
+We identify the design goals for network measurement platform in home 
+networks:
+\begin{itemize}
+\item Safety: Internet users that participate in the testbed should not face significant risk. Code should be strictly sandboxed. Code executed on the testbed must not interfere with the performance or correctness of user's Internet connection. As mentioned in \ref{ssec.threat_models}, there are a few potential risks in home networks, therefore we design a network measurement platform with user security and privacy as a first-order concern.
+
+\item Privacy: Our goal is striving to maximize utility to experimenters while not compromising the privacy of the user (e.g., expose home network usage behaviour).
+
+\item Flexibility: The related works in \ref{ssec.related_work} show that a good network measurement platform should support for both passive and active measurements. Passive measurements provide precise and continuous understanding of network and active measurements provide some insight into the way real network traffic is treated within the network. We therefore require a wide range of APIs that support the implementation of as wide an array of network measurements as possible.
+
+\item Lightweight: We desire the platform's weight to be as light as possible for two reasons: (i) Due to Seattle is deployed in home networks on resource-constrained devices, it is impossible to run heavy softwares. (ii) Seattle nodes are on the direct path of real Internet users, hence we don't want to impact users' Internet connectivity.
+
+\item Accuracy: We desire the measurement platform to accurately track 
+general network information. Precise experiment data is able to help researchers study and understand network better.
+
+\item Easy to install and use: Unlike computer or mobile environments, home wireless routers are not familiar to most people. Therefore, installing is a big challenge. We require to provide an installer to help users to install, un-install, and stop easily.
+\end{itemize}
+
+Seattle's design (\ref{sec.design}) addresses the first three goals and its implementation (\ref{sec.implementation}) the remaining goals.
+
+\subsection{Challenges}
+\label{ssec.challenges}
+A testbed that allows researchers to execute code across donated embedded devices faces four major challenges: 
+\begin{itemize}
+\item First, the embedded devices poses a limited resources challenge. It is hard to run heavy scripting languages like Python or Ruby. 
+\item The second challenge is user's networking experience. Seattle nodes are on the direct path of real Internet users. A malicious network measurement experiment will noticeably affect a normal user's network experience. 
+\item The third challenge is secure data access. Network traffic data pose a risk to device donors whose devices are exposed to malicious code written by users. 
+\item The fourth challenge is data privacy. Users should not gain access to information that donors don't want to share.
+\end{itemize}
+As the development of hardware technology and based on our practical experience, running Python codes are going well on embedded devices. And the last three challenges can be solved via using a secure and performance-isolated sandbox and a reference monitor framework we proposed.
+
+\subsection{Threat model}
+\label{ssec.threat_models}
+While a wide ranges of programming functionalities on embedded devices are 
+very useful, they also pose a risk to users. To understand the scope of 
+issues that our work will address, we summarize all the security issues 
+possible within the home network.
+
+\begin{itemize}
+\item The first issue is insecure interfaces and application programming interfaces
+. Low-level operations (like writing to files or sending network messages) 
+will be accessed through Application Programming Interfaces (APIs). 
+Malfunctions and errors in the interface can lead to unwanted exposure of 
+users data and attacks upon the data's integrity. For example, attackers can 
+use code injection attack to gather data on local host or gain complete 
+control. Threats can also exist as result of poorly designed or implemented 
+security policy. If these policies can be bypassed, the platform can be 
+easily abused by attackers. Regardless of the threat origin, APIs need to be 
+made secure against accidental and malicious attempts to circumvent the APIs.
+
+\item The second issue is denial of service. For a distributed system, it is 
+necessary to control resource consumption on the local host, minimizing the 
+impact of Internet connectivity. As such, if an attacker consumes a large 
+amount of resources, it can lead to poor performance. Therefore, managing 
+resources at large scale while providing performance isolation is a key 
+challenge for any distributed system software.
+
+\item The third issue is home network compromise. There is an important difference between Seattle Testbed and other testbeds, such as PlanetLab. Our experiments involve home networks. Attackers can get the control rights of the home network via our platform and send the malicious control commands to different kinds of WiFi enabled devices such as laptop, printers, wireless based security cameras, entertainment devices and other security systems, which may lead to undesired consequences. By exploiting vulnerabilities in home networks, attackers also can gather information on targets, threatening home network's privacy and safety, understanding behavior and patterns. For instance, some devices can be shut down unusually or the information of some devices can be monitored.
+
+\item The fourth issue is data leakage. Here we consider the following problem: how does a user know whether their data is accessible and has not been corrupted? Currently, many testbeds do not explicitly guarantee data integrity or availability. Users have access to the hardware and can modify firmware via testbed. Attacker also could contribute malicious data to influence conclusions. These impose new security challenges. Thus, it must prevent an experiment from performing malicious actions like reading the user's sensitive files or tampering system files.
+\end{itemize}
