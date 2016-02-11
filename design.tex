@@ -1,19 +1,19 @@
-\section{A New Design for Building Secure Network Testbed}
+\section{Design}
 \label{sec.design}
 Our goal is to build a secure network testbed that can mitigate the problem 
 of end user's security and privacy issue. 
 
-The previous works introduced in \S{\ref{sec.related_work}} serves the 
+The previous works introduced in \S{\ref{ssec.related_work}} serves the 
 purpose of understanding the disadvantages of current network testbed. Our 
-finding in \S{\ref{sec.related_work}} suggest that it is important to 
-balance the trade-off between security and functionalitiy.
+finding in \S{\ref{ssec.related_work}} suggest that it is important to 
+balance the trade-off between security and functionality.
 
 In this section, we use this idea to guild our new design for building 
-secure network testbed. Our goal is to allow researchers to run texperiments 
+secure network testbed. Our goal is to allow researchers to run experiments 
 while reducing the risk of security and privacy problem.
 
 \subsection{Overview}
-Today's poor visibility into the home network hampers progress in a number 
+Today's poor visibility into the home networks hampers progress in a number 
 of important research areas, from WiFi management strategies to broadband 
 characterization. Previous works~\cite{sanchez2014measurement}~\cite{
 dhawan2012fathom} usually provides a programmable interface for writing and 
@@ -27,7 +27,7 @@ home gateway is “demarcation point” between the home wireless network and
 the access link so that it is the best place to learn about wired and 
 wireless network. Although BISmark~\cite{183951} has been worked on 
 deploying measurements  through the long-term deployment of gateways in 
-homes, it has several security issues that might cripple a user\’s Internet 
+homes, it has several security issues that might cripple a user's Internet 
 connection. Seattle instead allows untrusted parties to run arbitrary codes 
 on our platform via a programmable interface and resource protection 
 framework. A user can let a third party have access to their network traffic 
@@ -37,117 +37,88 @@ of world, but also decide how many resources an application can use. For
 example, an experiment could be prevented when consuming so much resources 
 or access some interfaces which are not allowed by device\'s owner. 
 
-Seattle is composed of three separate parts: router owner, clearinghouse and 
-researcher. Router owner donates computational resources to our platform, 
-clearinghouse enable researchers to pool and share resources, researcher is 
-seeking to run experiments on remote router.
+Seattle is composed of three separate parts: home wireless router, clearinghouse and experimenter. Router owner donates computational resources to our platform, clearinghouse enable researchers to pool and share resources, experimenter is seeking to run experiments on remote router.
 
-Before conducting any network measurement experiments, owner first downloads 
-installer package from clearinghouse which is a testbed server that keep 
-track of routers and allow researcher to access available routers. To run 
-codes on owner's router, researchers needs to download an experiment manager 
-to his own laptop. Researcher uses the experiment manager to access the 
-remote router directly, upload experiment codes and start or stop the 
-execution of the experiment.
+Before conducting any network measurement experiments, owner first downloads installer package from clearinghouse which is a testbed server that keep track of routers and allow researcher to access available routers. To run codes on owner's router, experimenters needs to download an experiment manager to his own laptop. Experimenter uses the experiment manager to access the remote router directly, upload experiment codes and start or stop the execution of the experiment.
+
+\subsection{Platform Components}
+\subsubsection{Home wireless router}
+Home wireless routers provide resources for experimenters to use in their network measurements. To isolate experimenter code from home wireless router, experimenters' code executes in a \textbf{sandbox} environment. The default sandbox in Seattle is a extended-Repy, a subset of the Linux Kernel API constructed with the Restricted Python sandbox. When experimenter want to deploy their codes on a remote router, they need a way to upload code into a sandbox and start it. The \textbf{node manager} listens for remote commands and mediates access to the sandboxes to ensure that only authorized experimenters can execute code in them. Finally, the \textbf{software updater} handles software updates. Once installed, any updates are pushed to nodes automatically instead of searching for new releases of the software manually.  
+\subsubsection{Platform provider}
+The platform provider helps experimenters to pool and share platform resources. A experimenter can distribute a Seattle installer with his credentials inside and share it with router owners. To join Seattle, a router owner first acquire an Seattle installer. The sandbox, nodemanager, software updater and a set of public keys are packaged into this installer by a \textbf{package builder}. After an installation, experimenter uses the public keys to register this node in a \textbf{lookup service} so that this node will be discovered by experimenters.
+
+\subsubsection{Experiment manager}
+Experimenters use their local machines to initiate and control experiments on a Seattle-enabled router. The \textbf{experiment manager} allows experimenters deploy code into the sandbox and debug the result on seattle-enabled router. The experiment manager first looks up the set of seattle-enabled routers associated with an experimenter via the lookup service and then communicates with these nodes, executing commands on the behalf of the experimenter. 
 
 \subsection{API Design}
-Our main goal is to provide a wide range of capabilities that support the 
-implementation of a broad range of network measurements on home gateway. In 
-order for us to perform and collect measurements from home gateway, we have 
-proposed and implemented a programmable API that expose a set of simple 
-capabilities. Our experiment management tool is able to use this API to 
-perform a rich set of network measurements. Seattle Testbed currently 
-provides three main API families and supported the types of network 
-measurement (listed in Table 1 and Table 2):
+Seattle is network measurement platform designed to facilitate a broad range of experiments on home gateway while controlling the impact on hosts' resources and network connectivity. A key challenge is selecting a programming interface that is both flexible (i.e., supports a rich set of network measurements) and safe (i.e., des not disrupt a normal user's Internet connectivity). Previous work on sandboxed, programming measurement environments Seattle could server as a useful environment for running network experiments. Considering our goal of supporting a wide range of network measurements on home wireless router, we opt for extending a few capabilities to Seattle sandbox Repy. Tables \ref{table:new_api} and \ref{table:Repy} provide a summary of our proposed API calls and the current set of measurement capabilities Seattle supported. 
 
-\begin{table*} %[!ht]
+Network measurement platforms in today's networks should support both active and passive measurement. Active measurements require injecting test packets into the network. Traditionally, active measurement tools such as Ping and Traceroute were used to determine round-trip delays and network topologies. In comparison to the active measurement, the passive measurements do not inject test packets into the network. They need to capture packets and their corresponding timestamps transmitted by the platform. It can provide the information such as availability, utilization, packet errors and discards. Table \ref{table:experiment} shows experiments obtained from Seattle. Then we now briefly describe these capabilities corresponding to network measurements.
+
+\textbf{Basic Statistics.} get\_network\_bytes, get\_network\_packets and get\_network\_interface records aggregate network statistics for passively collected data. These methods read directly and parse data from \emph{/proc/dev/net}. These are able to leverage the naturally-generated network traffic as passive measurements (particularly in the area of broadband characterization) by continuously monitoring the home gateway Internet connection.
+
+\textbf{Wireless Information.} scan and get\_station provides a python interface to low-level system calls on system. The function sanitizes the call arguments, parsing complex output and return results to the caller. These methods use the \emph{iw} command-line tool 
+to gather all this information. They enable experimenter to study dense WiFi networks and home networks characteristics.
+
+\textbf{Measurement Tool.} ping and traceroute serves as the basis for active measurements. These tools can be combined to build a wide range of measurements experiments. They also are able to contribute to local network debugging.
+
+\textbf{Repy.} Currently this programming interface provides functions for networking, file system access, threading, locking, logging, and so on. These cover a broad range of network and file I/O capabilities. Repy is highly portable, and has been running  in many network measurement projects, such as Content Distribution Network (CDN) Measurements~\cite{rafetseder2011exploring}, Video Streaming and Overlay Routing~\cite{eisl2011service}, Open3GMap~\cite{open3gmap} and so on.
+
+\begin{table*}
 \scriptsize
 \centering
-\begin{adjustwidth}{1cm}{-1cm}
-\begin{tabular}{|p{.3\textwidth}| p{.5\textwidth}| m{.7\textwidth}|}
+\begin{tabular}{|p{.2\textwidth}| p{.4\textwidth}| m{.6\textwidth}|}
 \hline
 \textbf{API}    &  \textbf{Description} \\
  \hline
- {\bf system.scan} & {\bf Collect the list of access points found with a WiFi scan. For each access point we collect BSSID, SSID, signal strength and channel number.} \\
+ {\bf scan} & {\bf Collect the list of access points found with a WiFi scan. For each access point we collect BSSID, SSID, signal strength and channel number.} \\
 \hline
- {\bf system.get\_station} & {\bf Record downlink statistics per associated client (e.g., Total packets sent, received, retried, client's signal strength at home wireless router).} \\
+ {\bf get\_station} & {\bf Record downlink statistics per associated client (e.g., Total packets sent, received, retried, client's signal strength at home wireless router).} \\
 \hline
- {\bf utils.get\_network\_interface} & {\bf Return a list of available network interfaces.} \\
+ {\bf get\_network\_interface} & {\bf Return a list of available network interfaces.} \\
 \hline
- {\bf utils.get\_network\_bytes} & {\bf Record information about the configured network interfaces. The statistics include metrics such total number of received or transmitted bytes, drops, errors.} \\
+ {\bf get\_network\_bytes} & {\bf Record information about the configured network interfaces. The statistics include metrics such total number of received or transmitted bytes, drops, errors.} \\
 \hline
- {\bf utils.get\_network\_packets} & {\bf Record information about the configured network interfaces. The statistics include metrics such total number of received or transmitted packets, drops, errors.} \\
+ {\bf get\_network\_packets} & {\bf Record information about the configured network interfaces. The statistics include metrics such total number of received or transmitted packets, drops, errors.} \\
 \hline
- {\bf network.ping} & {\bf A pure python ping implementation using raw sockets.} \\
+ {\bf ping} & {\bf A pure python ping implementation using raw sockets.} \\
 \hline
- {\bf network.traceroute} & {\bf Return the route packets take to network host. } \\
-\hline
- {\bf network.tcp} & {\bf Send or receive TCP traffic.} \\
-\hline
- {\bf network.udp} & {\bf Send or receive UDP traffic.} \\
-\hline
- {\bf network.getmyip} & {\bf Returns the localhost's \"Internet facing\" IP address.} \\
-\hline
- {\bf network.dns} & {\bf Perform DNS lookups} \\
+ {\bf traceroute} & {\bf Return the route packets take to network host. } \\
 \hline
 \end{tabular}
-\end{adjustwidth}
-\caption {API design}
-\label{table:api_design}
+\caption {A summary of our proposed API calls}
+\label{table:new_api}
 \end{table*}
 
-\begin{table*} %[!ht]
+\begin{table}[]
+\centering
+\begin{tabular}{|l|l|lll}
+\cline{1-2}
+Network                                                                                                                                                                                                                                                                                         & File system                                                                                                                                         &  &  &  \\ \cline{1-2}
+\begin{tabular}[c]{@{}l@{}}gethostbyname\\ getmyip\\ sendmessage\\ openconnection\\ socket.close\\ socket.send\\ socket.recv\\ listenforconnection\\ tcpserversocket.getconnection\\ tcpserversocket.close\\ listenformessage\\ udpserversocket.getmessage\\ udpserversocket.close\end{tabular} & \begin{tabular}[c]{@{}l@{}}openfile\\ close\\ readat\\ writeat\\ listfiles\\ removefile\end{tabular}                                                &  &  &  \\ \cline{1-2}
+Threading                                                                                                                                                                                                                                                                                       & Miscellaneous                                                                                                                                       &  &  &  \\ \cline{1-2}
+\begin{tabular}[c]{@{}l@{}}createlock\\ lock.acquire\\ lock.release\\ createthread\\ sleep\\ getthreadname\end{tabular}                                                                                                                                                                         & \begin{tabular}[c]{@{}l@{}}log\\ getruntime\\ randombytes\\ exitall\\ createvirtualnamespace\\ getresources\\ virtualnamespace.evalute\end{tabular} &  &  &  \\ \cline{1-2}
+\end{tabular}
+\caption{Current set of measurement capabilities Seattle supported}
+\label{table:Repy}
+\end{table}
+
+\begin{table*} 
 \scriptsize
 \centering
-\begin{tabular}{|l|c|c|c|c|c|c|}
+\begin{tabular}{|p{.1\textwidth}| p{.3\textwidth}| m{.3\textwidth}|}
 \hline
-\textbf{}    &  \textbf{ISP performance} & \textbf{Home network usage}  & \textbf{Internet connectivity and reachability}\\
+\textbf{Type} & \textbf{Parameters} & \textbf{Descriptions} \\
  \hline
- {\bf system.scan} & {\bf *} & {\bf } & {\bf }\\
+ {\bf Passive} & {\bf Aggregate traffic statistics per associated client (e.g., Total packets sent, received, retried,
+client\'s signal strength at AP)\newline neighboring APs information} & {\bf Home network characteristics \newline Usage characteristics} \\
 \hline
- {\bf system.get\_station} & {\bf *} & {\bf *} & {\bf }\\
-\hline
- {\bf utils.get\_network\_interface} & {\bf *} & {\bf } & {\bf }\\
-\hline
- {\bf utils.get\_network\_bytes} & {\bf *} & {\bf } & {\bf }\\
-\hline
- {\bf utils.get\_network\_packets} & {\bf *} & {\bf } & {\bf *}\\
-\hline
- {\bf network.ping} & {\bf *} & {\bf } & {\bf *}\\
-\hline
- {\bf network.traceroute} & {\bf } & {\bf } & {\bf *}\\
-\hline
- {\bf network.tcp} & {\bf *} & {\bf } & {\bf *}\\
-\hline
- {\bf network.udp} & {\bf *} & {\bf *} & {\bf }\\
-\hline
- {\bf network.getmyip} & {\bf *} & {\bf *} & {\bf *} \\
-\hline
- {\bf network.dns} & {\bf *} & {\bf } & {\bf *}\\
+ {\bf Active} & {\bf Throughput, Latency, Loss, Jitter, traceroute, DNS lookups} & {\bf ISP characteristics \newline Internet connectivity and reachability} \\
 \hline
 \end{tabular}
-\caption {Network measurement type}
-\label{table:type}
+\caption {Experiments obtained from Seattle}
+\label{table:experiment}
 \end{table*}
-
-\emph{system} provides a python interface to low-level system calls on system
-. Seattle Testbed sanitizes the call arguments, parsing complex output and 
-return results to the caller. Examples in this family include get\_station 
-and scan implementation. These methods use the iw command-line tool 
-to gather all this information. Researchers are able to study dense WiFi 
-networks by these functions.
-
-
-\emph{utils} records aggregate network statistics for passively collected 
-data. These methods read directly and parse data from \emph{/proc/dev/net}. 
-These are able to leverage the naturally-generated network traffic as 
-passive measurements (particularly in the area of broadband characterization)
-by continuously monitoring the home gateway Internet connection.
-
-\emph{network} provides low-level measurements functionalities that can be 
-combined to build a wide range of measurement experiments. Current available 
-measurement functions include ping, traceroute, performing DNS lookups, 
-obtaining the local IP address, and sending or receiving TCP and UDP traffic.
 
 \subsection{Security}
 Seattle nodes are on the direct path of real Internet users, therefore we 
@@ -156,7 +127,7 @@ executing experiments. To do so, Seattle Testbed uses a sandboxed
 environment for safe execution of external code, performance isolation for 
 programs and traffic containment service. 
 
-Safe execution: This is achieved by Repy, which is a subset of the POSIX API 
+Safe execution: This is achieved by Repy, which is a subset of the Linux Kernel API 
 constructed with the Restricted Python sandbox. To prevent insecure actions 
 the sandbox hooks into the Python parser and reads the program's parse tree. 
 Only actions that the sandbox can verify as safe may execute. Repy is highly 
@@ -171,7 +142,7 @@ percentage of the device's CPU, memory disk, and other resources to one or
 more VMs. As a result, experiment programs are sandboxed and securely 
 isolated from other programs on the same device. 
 
-Traffic containment service: Due to seattle allows TCP/UDP socket operation, 
+Traffic containment service: Due to Seattle allows TCP/UDP socket operation, 
 attackers can exploit the security vulnerability to compromise the 
 computers, printers and other connected devices in home networks. To prevent 
 such actions, there must be restrictions on which hosts testbed nodes can 
