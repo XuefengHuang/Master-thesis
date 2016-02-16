@@ -8,13 +8,13 @@
 \usepackage{array}
 \usepackage{cite}
 \usepackage{hyperref}
+\usepackage[backend=biber]{biblatex}
+\addbibresource{thesis.bib}
 \usepackage[utf8]{inputenc}
-%SetFonts
+\newcommand{\sysname}{Soar\xspace}
+\newcommand{\sandboxname}{Soar-Repy\xspace}
 
-%SetFonts
-
-
-\title{Brief Article}
+\title{\sysname: An experimental platform for home WiFi router}
 \author{Xuefeng Huang}
 %\date{}							% Activate to display a given date or no date
 
@@ -28,7 +28,8 @@
 \input{background_motivation.tex}
 \input{design.tex}
 \input{implementation.tex}
-\newpage
-\bibliographystyle{plain}
-\bibliography{thesis}
+%\newpage
+\printbibliography
+%\bibliographystyle{plain}
+%\bibliography{thesis}
 \end{document}  
