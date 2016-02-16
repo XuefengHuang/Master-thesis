@@ -3,49 +3,53 @@
 
 Based on the design introduced in \S{\ref{sec.design}}, we implement a 
 secure network testbed. We describe the implementation details of our system 
-in this section.
+in this section. It is important to acknowledge that the \sysname benefits from the design and implementation of Seattle Testbed, an open experimental platform for researchers and educators to understand the real world network. Over the past six years, the Seattle Testbed has been used in a variety of different experiments and its use is spread across the world. A core design principle of this testbed is the implementation of Repy sandbox on user devices. The sandbox has several goals. First of all, it must be able to run experiment code while representing as little risk to user's security as possible. For instance, programs are only allowed to operate inside of a sandbox, ensuring user's sensitive information on host are kept safe and private. In additional, sandbox must provide performance isolation for experiment code to prevent them from consuming too much CPU, memory, disk I/O and network bandwidth. The basic design of the Repy for OpenWrt described below was leveraged from the Seattle design.
 
-\subsection{Architecture of Seattle}
-The primary goal of Seattle is to run a wide range of network measurements 
-on remote home gateway without compromising home network security and privacy
-. To achieve this goal, we try to minimize the disruption of Internet 
-connectivity. From distributed platform design, we leverage Seattle Testbed 
-which is a community-driven, open source cloud computing system to acheive 
-this goal. 
+\subsection{Core components}
+\subsubsection{Sandbox}
+\label{sec.sandbox}
+The core sandbox of \sandboxname, which is extended from Repy (Restricted Python), a Python-based programming language sandbox that minimizes the risk of bugs by providing security isolation and performance isolation. Experimenters in \sysname use this Python-like programming interface to write experiment code. Currently. Repy provides programmers with the ability to read and write files on the disk, send TCP and UDP traffic and some utility methods to retrieve time etc. In order to run broadband and wireless network experimentation on home user WiFi routers, \sysname extends the Repy and adds the capability to access linux kernel API and active measurement tools (e.g., Ping, Traceroute). The programming interface exposed to the repy-scripts has been extended to include methods to list available access points and connected clients, receive network traffic data from proc file system and do common active measurements (Ping and Traceroute). To avoid resource limitation, we define a policy to control the resource of reading proc file system. 
 
-When distributed platform is achieved, we also want to run arbitrary codes 
-across donated devices. We safely extend new research capabilities in our 
-Repy sandbox. We use Repy sandbox to reconstruct a programming interface, 
-which provides network functionalities sufficient for most network 
-measurements.
+Another important feature of \sandboxname allows us to define a policy for its programming interface. For example, the sandbox can anonymize the MAC address of available access points and blacklist home user's LAN. The policy enforcement is presented in Section \ref{sec.securitylayer}. We focus on the security and performance isolation of \sandboxname in this section.
+\begin{itemize}
+\item \textbf{Performance isolation: }Each router running \sysname uses an uniform resource control method to allocate a fixed percentage (usually 50\%) of the router's CPU, memory, brandwidth, disk and other resources to one or more sandboxes. To achieve this, Repy uses operating system hooks to monitor the amount of CPU and memory available to a experiment. To restrict other resources such as network bandwidth and disk I/O, Repy checks those calls that access these resources, and preventing or delaying the execution of these calls if they exceed configured quota. When sandbox is started, it reads a configure file that lists the resources allocated to the experiment. Each line contains a resource type and quantity. For example, \textit{resource diskused 100000000} means that 100 million bytes disk memory can be used at most. And \textit{resource procfs 100} allows the experiment to read \textit{proc} file system 100 times at the same time. Due to this isolation, sandbox does not allow experiment to consume a lot of resources and ensure experiment not affect Internet connectivity.
 
-\subsection{Implementation Details}
-\textbf{Seattle porting onto home wireless router:} 
-Seattle is a platform for networking and distributed systems 
-research. It supports a wide range of devices including desktop, laptop, 
-servers, etc.
+\item \textbf{Security isolation: }
 
-Compared to desktop and laptop environments, deployment on home wireless 
-router has more resource limitation such as restricted computational 
-resources. However, recently we are able to port Seattle to embedded devices.
-Users can now build their own Seattle installer(IPK) via OpenWrt SDK and 
-install it on the device easily. 
+ \end{itemize}
+\subsubsection{Package Builder}
+\label{sec.packagebuilder}
+Any experimenter can easily obtain a customized installer for \sysname which provides access to sandboxes in any way. The goal of package builder is make it incredibly easy to post our platform to OpenWrt. Currently we use OpenWrt SDK to build installer. These can be given out by an experimenter who does not want use a clearinghouse. In addition, these installers can be bundled with other components to allow the experimenter direct control over safe experimental sandboxes on their end user devices.
 
-\textbf{Supporting wireless interface on wireless embedded devices:} 
-Due to its isolation of the virtual machine, Seattle cannot normally access 
-network traffic data on a user's home router devices, such as bandwidth, 
-WiFi SSID and signal strength, etc. However, if the data is anonymized, it 
-would be very useful to researchers. Seattle provides an API for reading 
-wireless network data from a Seattle VM and providing it to users. It is 
-extended from Seattle RepyV2 and provide system wide protection against 
-greedy processes that include isolating performance. 
+\subsubsection{Node Manager}
+\label{sec.nodemanager}
+Node manager\cite{nodemanager} ensures that sandboxes are correctly assigned to experimenters and experimenters can control those sandboxes safely. Cryptographically signed messages is used to perform authentication of remote experimenters who are identified by their public keys. An experimenter can perform actions on the sandbox such as starting and stoping an experiment, uploading code, colleting files and data. The node manager is running in a sandbox to check whether the interface is accessed.
 
-\textbf{Reference monitor:}
-Seattle also provides a framework of reference monitor, to enforce mandatory 
-access control to sensitive data in real time. Based on the type of network 
-measurement experiment, the data returned by the embedded devices can be 
-passed through, filtered, or dropped by the reference monitor.
+\subsubsection{Software updater}
+\label{sec.softwareupdater}
+Software updater allows SOAR-enabled router to search for and update new release automatically. It runs in background, sleeps some random amount of time (30min - 1hour) to check with the package builder if there exists a new update. It then downloads the new installer from package builder and replaces the old installer.
 
+\subsubsection{Lookup service}
+\label{sec.lookupservice}
+A lookup service allows experimenter to locate the corresponding sandboxes. We currently use OpenDHT\cite{rhea2005opendht} as a distributed way to store data. Each sandbox advertise their availability via OpenDHT using a public key. OpenDHT runs on a variety of PlanetLab nodes and replicates data.
+
+\subsubsection{Experiment manager}
+\label{sec.seash}
+An experiment manager provides experimenters with a simple interface for interacting with the resource manager on remote devices. The primary interactive service manager used in \sysname is \textit{seash}\cite{seash}. It provides an interactive shell to the experimenters. seash exchanges cryptographically signed communication with sandboxes to control experiments and upload files.
+
+\subsection{Sandbox extensions}
+\label{sec.extensions}
+Extensions enhance the functionality of the Repy sandbox and allow a wide range of network measurements on home wireless router. First, we implemented system hooks call \textit{openwrt modules} to interact with a variety of wired and wireless network information through Linux kernel API. Currently, implemented \textit{openwrt modules} are supported to learn about configured network interfaces statistics, connected devices and nearby WiFi access points. While openwrt modules are the system hooks with read access to valuable data, they can not modify data. Additionally, we also implemented a \textit{general modules} to provide two active measurement tools (Ping and Traceroute). We choose pure raw socket method to implement them so that they will be supported across a variety of operating systems. 
+
+\subsection{Sandbox policies}
+\label{sec.policy}
+
+\subsubsection{Containing sandbox traffic}
+This kind of policies are able to limit the address and port ranges on which sandboxed can communicate with. For example, this can be used to whitelist some \sysname -enabled routers that want to participate in an experiment, and to blacklist other nodes. In a practical deployment, router owners will blacklists their LAN to protect their home networks.
+
+\subsubsection{Preserving privacy through blurring}
+Our sandbox may provide potentially inappropriate functions such as network traffic capture that disclose the home network behaviour pattern of router owner. This kind of policies are able to change the behaviour of a function such as it can disable the return value and the frequency of a specified value returned. For instance, router owner could anonymize the MAC addresses of available neighbor access points.
+ 
 \subsection{Deployment}
 Deploying Seattle Testbed in a real-world setting is essential to study and 
 evaluate bandwidth performance and wireless performance under the conditions 
