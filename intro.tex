@@ -29,34 +29,36 @@ software client, thus it is not able to run certain measurements due to
 application restriction and cannot run continuous measurements (i.e., since 
 hosts can be turned off, moved, etc.)
  
-To address these issues, we developed Seattle Testbed~\cite{seattle}~\cite{zhuang2013experience}~\cite{cappos2009seattle}, an open research and educational testbed that implements a number of measurements primitives that enable researchers, policy makers and Internet Service Providers (ISPs) to program network measurements. Seattle is able to deploy in home wireless router so that it is capable of running both active and passive experiments from a vantage point between the access ISP and the home network, as shown in Fig. 1. To ensure safety, Seattle supports a very flexible language for experiment specification based on Repy which is lightweight, python based, performance isolation and extensible programming language~\cite{cappos2010retaining}. It provides researchers with the ability to install sandboxed measurement applications on the home gateway. 
+To address these issues, we developed \sysname, an open research and educational testbed that implements a number of measurements primitives that enable researchers, policy makers and Internet Service Providers (ISPs) to program network measurements. \sysname is able to deploy in home wireless router so that it is capable of running both active and passive experiments from a vantage point between the access ISP and the home network, as shown in Fig. 1. To ensure safety, \sysname supports a very flexible language for experiment specification based on Repy which is lightweight, python based, performance isolation and extensible programming language~\cite{cappos2010retaining}. It provides researchers with the ability to install sandboxed measurement applications on the home wireless router. 
 
 \begin{figure}%[h]
 \centering
-\includegraphics[width=0.5\columnwidth]{figure/home-network.jpg}
+\includegraphics[width=0.8\columnwidth]{figure/home-network.jpg}
 \caption{The router sits directly behind the modem in the home network.}
 \label{figure:design}
 \end{figure}
 
-Both strengths and challenges of a platform like Seattle Testbed stem from 
+Both strengths and challenges of a platform like \sysname stem from 
 its inclusion of measurement nodes on the home gateway. First, each nodes 
-must be small and easy-to-deploy because Seattle is deployed on resource-
-constrained devices. Second, Seattle nodes are on the direct path of real 
+must be small and easy-to-deploy because \sysname is deployed on resource-
+constrained devices. Second, \sysname nodes are on the direct path of real 
 Internet users. Thus it must guarantee the safety of the volunteer nodes. 
 Third, it is important to make system robustness, remote maintenance and 
 update because of the unmanaged complexity of its home network environments. 
-Finally, Seattle must provide a rich set of APIs for different network 
+Finally, \sysname must provide a rich set of APIs for different network 
 measurements.
 
-In this paper, we introduce Seattle Testbed, a distributed cloud platform 
+In this paper, we introduce \sysname, a distributed cloud platform 
 that allows researchers to run their project on system worldwide. This 
 testbed provides secure data access while preserving user privacy. Through a 
 programmable interface on device, the testbed enables researchers to deploy 
 a wide range of network measurements. We also discuss the constraints we 
-faced in the design, implementation and deployment of Seattle.
+faced in the design, implementation and deployment of \sysname.
 We make the following contributions in this work:
 \begin{itemize}
-\item\textit{1) Home routers platform:} This platform is based on Seattle\cite{zhuang2013experience}, a community-driven, open-source cloud computing system. Compared to computer and mobile device environments, deployment on home wireless router has more resource limitation such as restricted computational resources. However, recently we are able to port Seattle to embedded devices. Users can build their own Seattle installer (IPK) via config file we provide using OpenWrt SDK and install it on the device directly. 
-\item\textit{2) Extensions to Seattle Testbed:}  Our testbed implements new research capabilities for home wireless router by improving on the Seattle sandbox. To handle home wireless routers, our testbed uses low-level system calls in the OpenWrt platform\cite{openwrt} with the Restriction Python (Repy)\cite{cappos2010retaining}, the core sandbox of Seattle. In order to securely interact with home routers on remote user devices, we use Fence~\cite{li2015fence} to allocate a fixed percentage of the device's CPU, memory disk, and other resources to one or more VMs. For example, we set the legal times of accessing proc file system to prevent DoS attack using our API calls. Our testbed adds seven functionalities based on Repy, as shown in in Table I. Through these new functionalities I proposed, researchers are able to implement a wide range of network measurements, as shown in in Table II.
-\item\textit{3) Experimental Characterization of home wireless networks: } By integrating Seattle with the home network, we get the benefits of a real world deployment while ensuring flexibility to run experiments without compromising home network. We demonstrate Seattle's utility by implementing one example usage case that together exercise different new API calls (get\_network\_bytes, get\_network\_interface, get\_station): monitoring how busy the WiFi channels in a place over one or two weeks. Our goal is to illustrate how Seattle can support disparate measurement needs.
+\item\textit{1) Home routers platform:} This platform is based on Seattle testbed~\cite{zhuang2013experience}~\cite{cappos2009seattle}, a community-driven, open-source cloud computing system. Compared to computer and mobile device environments, deployment on home wireless router has more resource limitation such as restricted computational resources. However, recently we are able to port Seattle Testbed to embedded devices. Users can build their own \sysname installer (IPK) via config file we provide using OpenWrt SDK and install it on the device directly. 
+\item\textit{2) Extensions to Seattle Testbed:}  Our testbed implements new research capabilities for home wireless router by improving on the Seattle sandbox. To handle home wireless routers, our testbed uses low-level system calls in the OpenWrt platform\cite{openwrt} with the Restriction Python (Repy)\cite{cappos2010retaining}, the core sandbox of Seattle. In order to securely interact with home routers on remote user devices, we use Fence~\cite{li2015fence} to allocate a fixed percentage of the device's CPU, memory disk, and other resources to one or more VMs. For example, we set the legal times of accessing proc file system to prevent DoS attack using our API calls. Our testbed adds seven functionalities based on Repy. Through these new functionalities I proposed, researchers are able to implement a wide range of network measurements.
+\item\textit{3) Experimental Characterization of home wireless networks: } By integrating Seattle with the home networks, we get the benefits of a real world deployment while ensuring flexibility to run experiments without compromising home network. We demonstrate \sysname's utility by implementing one example usage case that together exercise different new API calls (get\_network\_bytes, get\_network\_interface, get\_station): monitoring how busy the WiFi channels in a place over one or two weeks. Our goal is to illustrate how \sysname can support disparate measurement needs.
 \end{itemize}
+
+The rest of thesis is structed as follows: We provide background and motivation in section \ref{sec.background_motivation}. Section \ref{sec.design} and \ref{sec.implementation} describes the design and implementation of \sysname and characterize our current deployment. We present a study case to illustrate the benefits of an experimental platform that runs on the home wireless router in section \ref{sec.evaluation}. Finally, we discuss future work and conclusion in section \ref{sec.conclusion}. 
