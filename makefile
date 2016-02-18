@@ -21,7 +21,7 @@ $(TARGET).aux: $(TARGET).tex $(wildcard *.tex)
 
 $(TARGET).bbl: $(TARGET).bib $(TARGET).aux
 	pdflatex $(TARGET).tex
-	bibtex $(TARGET)
+	./biber $(TARGET)
 
 tags: TAGS
 .PHONY: tags TAGS
