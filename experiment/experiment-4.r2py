@@ -1,0 +1,10 @@
+data = "a"*10000
+time1 = getruntime()
+socketobject = openconnection('192.168.1.136', 50154, getmyip(), 63100, 100)
+while True:
+	if getruntime() - time1 <30:
+		socketobject.send(data)
+	else:
+		sleep(30)
+		time1 = getruntime()
+
