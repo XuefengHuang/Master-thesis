@@ -2,13 +2,13 @@ time = dy_import_module("time.r2py")
 timeport = list(getresources()[0]["connport"])[0]
 time.time_updatetime(timeport)
 while True:
-	myfileobject = openfile("result1.txt", True)
-	myfilecontent = myfileobject.readat(None, 0)
-	offset = len(myfilecontent)	
-	t = time.time_getunixtime()
-	content = str(t) + ' ' + str(get_network_bytes('wlan0')['trans']) + ' ' +str(get_network_bytes('wlan0')['recv']) + ' ' + str(get_network_bytes('wlan0')['rx_error']) + ' ' + str(get_network_bytes('wlan0')['tx_error']) + ' ' + str(get_network_bytes('wlan0')['rx_drop']) + ' ' + str(get_network_bytes('wlan0')['tx_drop'])
-	for i in wifi_status('wlan0'):
-		content += ' ' + i['frequency'] + ' ' + i['busy_time'] + ' ' + i['active_time'] + ' ' + i['transmit_time'] + ' ' + i['receive_time']
-	myfileobject.writeat(content + "\n", offset)
-	myfileobject.close()
-	sleep(60)
+  myfileobject = openfile("result1.txt", True)
+  myfilecontent = myfileobject.readat(None, 0)
+  offset = len(myfilecontent) 
+  t = time.time_getunixtime()
+  content = str(t) + ' ' + str(get_network_bytes('wlan0')['trans']) + ' ' +str(get_network_bytes('wlan0')['recv']) + ' ' + str(get_network_bytes('wlan0')['rx_error']) + ' ' + str(get_network_bytes('wlan0')['tx_error']) + ' ' + str(get_network_bytes('wlan0')['rx_drop']) + ' ' + str(get_network_bytes('wlan0')['tx_drop'])
+  for i in wifi_status('wlan0'):
+    content += ' ' + i['frequency'] + ' ' + i['busy_time'] + ' ' + i['active_time'] + ' ' + i['transmit_time'] + ' ' + i['receive_time']
+  myfileobject.writeat(content + "\n", offset)
+  myfileobject.close()
+  sleep(60)
