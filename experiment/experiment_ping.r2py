@@ -1,0 +1,15 @@
+time = dy_import_module("time.r2py")
+random = dy_import_module("random.r2py")
+
+
+timeport = list(getresources()[0]["connport"])[0]
+time.time_updatetime(timeport)
+while True:
+  myfileobject = openfile("result.txt", True)
+  myfilecontent = myfileobject.readat(None, 0)
+  offset = len(myfilecontent) 
+  t = time.time_getunixtime()
+  content = str(t) + ' ' + str(ping("192.168.1.136",4,2)['host']) + ' ' + str(ping("192.168.1.136",4,2)['avg']) + str(ping("192.168.1.143",4,2)['host']) + ' ' + str(ping("192.168.1.143",4,2)['avg'])
+  myfileobject.writeat(content + "\n", offset)
+  myfileobject.close()
+  sleep(5)
