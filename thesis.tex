@@ -1,14 +1,15 @@
 \documentclass[11pt]{report}
 \usepackage{geometry}                		
 \usepackage{graphicx}
+\usepackage{subcaption}
 \usepackage{array}					
 \usepackage[backend=biber]{biblatex}
 \addbibresource{thesis.bib}
 \usepackage[utf8]{inputenc}
-\newcommand{\sysname}{Soar }
-\newcommand{\sandboxname}{Soar-Repy }
+\newcommand{\sysname}{SOAR }
+\newcommand{\sandboxname}{SOAR-Repy }
 
-\title{\textbf{Soar: An experimental platform for home WiFi router} \\
+\title{\textbf{SOAR: An experimental platform for home WiFi router} \\
         {New York University} \\}
 \author{Xuefeng Huang}
 %\date{}							% Activate to display a given date or no date
@@ -23,6 +24,7 @@
 \input{background_motivation.tex}
 \input{design.tex}
 \input{implementation.tex}
+\input{evaluation.tex}
 \newpage
 \printbibliography
 %\bibliographystyle{plain}
