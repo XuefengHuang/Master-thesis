@@ -1,0 +1,243 @@
+\chapter{SOAR API}
+\label{AppendixA}
+\textbf{get\_network\_bytes(interface)}
+\begin{itemize}
+\item Purpose:
+
+Return the number of bytes received and transmitted from an Interface.The
+information returned is looked up in the procfs.
+
+\item Arguments:
+
+interface: the name of the interface to gather network information.
+
+\item Exceptions:
+
+RepyArgumentError is raised if the interface aren't valid types or values.
+
+FileNotFoundError is raised if the file does not exist.
+
+\item Side Effects:
+
+None.
+
+\item Resource Consumption:
+
+Consumes 4K of procfsread.
+
+\item Returns:
+
+Network usage info as a dict such as \{'trans':'59528148','recv':'1366399094',
+'rx\_error':'0','tx\_error':'0','rx\_drop':'0','tx\_drop': 0\}.
+\end{itemize}
+
+\textbf{get\_network\_packets(interface)}
+\begin{itemize}
+\item Purpose:
+
+Return the number of packets received and transmitted from an interface.
+The information returned is looked up in the procfs.
+
+\item Arguments:
+
+interface: the name of the interface to gather network information.
+
+\item Exceptions:
+
+RepyArgumentError is raised if the interface aren't valid types or values.
+
+FileNotFoundError is raised if the file does not exist.
+
+\item Side Effects:
+
+None.
+
+\item Resource Consumption:
+
+Consumes 4K of procfsread.
+
+\item Returns:
+
+Network usage info as a dict such as \{'trans':'598602','recv':
+
+'1262217','rx\_error':'0','tx\_error':'0','rx\_drop':'0','tx\_drop': 0\}.
+\end{itemize}
+
+\textbf{get\_network\_interface()}
+\begin{itemize}
+\item Purpose:
+
+Return a list of available network interfaces.
+
+\item Arguments:
+
+None.
+
+\item Exceptions:
+
+FileNotFoundError is raised if the file does not exist.
+
+\item Side Effects:
+
+None.
+
+\item Resource Consumption:
+
+Consumes 4K of procfsread.
+
+\item Returns:
+
+The list of strings (interface name).
+
+\end{itemize}
+
+\textbf{get\_station(interface)}
+\begin{itemize}
+\item Purpose:
+
+To get station statistic information such as the amount of tx/rx bytes, the last TX bitrate (including MCS rate) you can do.
+
+\item Arguments:
+
+interface: the name of the interface to gather network information.
+
+\item Exceptions:
+
+RepyArgumentError is raised if the argument isn't valid types or values.
+
+FileNotFoundError is raised if iw tool does not exist.
+
+\item Side Effects:
+
+None.
+
+\item Returns:
+
+station statistic information as a dict such as [\{'signal':'77[78,83] dBm','station':
+'54:4e:90:06:f3:6f','tx bitrate':'57.8 MBit/s MCS 5 short GI','rx bitrate':'1.0 MBit/s',
+'signal\_avg':'88[90,92] dBm','ip':'192.168.1.109'\}, \{'signal':'40[42,44] dBm','station':
+'ac:81:12:53:8e:0f','tx bitrate':'65.0 MBit/s MCS 6 short GI','rx bitrate':'18.0 
+MBit/s','signal\_avg':'42[44,48]dBm','ip':'192.168.1.143'\}].
+\end{itemize}
+
+\textbf{scan(interface)}
+\begin{itemize}
+\item Purpose:
+
+Collect a list of access points found with one WiFi. For each access point we collect BSSID, SSID ,signal strength and channel.
+
+\item Arguments:
+
+interface: the name of the interface to gather network information.
+
+\item Exceptions:
+
+FileNotFoundError is raised if iw tool does not exist.
+
+\item Side Effects:
+
+None.
+
+\item Returns:
+
+A list of access points such as [{'BSSID': 2c:3e:cf:a0:23:51,'SSID': nyu,'signal': 78.00 dBm,'Channel': 11}].
+\end{itemize}
+
+\textbf{wifi\_status(interface)}
+\begin{itemize}
+\item Purpose:
+
+Collect a list of WiFi channel information.
+
+\item Arguments:
+
+interface: the name of the interface to gather network information.
+
+\item Exceptions:
+
+FileNotFoundError is raised if iw tool does not exist.
+
+\item Side Effects:
+
+None.
+
+\item Returns:
+
+A list of WiFi channel information such as [\{'transmit\_time':'0 ms','frequency':
+
+'2412 MHz','busy\_time':'16 ms','receive\_time':'11 ms','active\_time':'24 ms'\},
+
+\{'transmit\_time':'1070113 ms','frequency':'2462 MHz [in use]','busy\_time':'22421480 
+
+ms','receive\_time':'20057267 ms','active\_time':'74024524 ms'\}]
+\end{itemize}
+
+\textbf{traceroute(dest\_ip, port, max\_hops, waittime, ttl)}
+\begin{itemize}
+\item Purpose:
+
+Return the route packets take to network host.
+
+\item Arguments:
+
+dest\_ip: The ip address to traceroute.
+
+port: The port to traceroute.
+
+max\_hops: Maximum number of hops.
+
+waittime: Set the time to wait for a response to a probe.
+
+ttl: Set what TTL to start.
+
+\item Exceptions:
+
+RepyArgumentError when the arguments aren't valid types or values.
+
+
+ResourceForbiddenError when the local port isn't allowed.
+
+\item Resource Consumption:
+
+This operation consumes network bandwidth of 64 * max\_hops bytes netrecv, 64 * max\_hops bytes netsend.
+
+\item Side Effects:
+
+None.
+
+\item Returns:
+
+traceroute result as a dict, such as \{1:'openrg.home (192.168.1.1)', 2:'10.240.161.249 (10.240.161.249)', 3:'67.59.231.17 (67.59.231.17)', 4:'ool4353dda4.dyn.optonline.net (67.83.221.164)', 5:'451be0c5.cst.lightpath.net (65.19.99.197)', 6:'64.15.0.80 (64.15.0.80)', 7:'*', 8:'*',9:'*', 10:'*'\}
+\end{itemize}
+
+\textbf{ping(dest\_ip, count, timeout)}
+\begin{itemize}
+\item Purpose:
+
+A pure python ping implementation using raw sockets.
+
+\item Arguments:
+
+dest\_ip: the address to communicate with.
+
+count: Stop after sending count ECHO\_REQUEST packets.
+
+timeout: Time to wait for a response, in seconds.
+
+\item Exceptions:
+
+RepyArgumentError when the host name is not valid types or values.
+
+\item Side Effects:
+
+None.
+
+\item Resource Consumption:
+
+This operation consumes network bandwidth of 256 * count bytes netrecv, 256 * count bytes netsend.
+
+\item Returns:
+
+ping statistics as a dict, such as \{'avg':'27.302','min':'14.861','host':'192.168.1.1',
+'max':'39.743','loss\_rate': 0.0\}.
+\end{itemize}

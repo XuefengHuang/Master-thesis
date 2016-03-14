@@ -60,6 +60,3 @@ As shown in figure~\ref{fig-examplecode}, whenever experiment code calls \textit
 \subsection{Restricting Capability Access}
 This kind of policy is able to allow experimenters to restrict the code on home wireless router. For example, the experimenter may want to restrict part of functionalities to satisfy router owner's need. It is also useful to save time to vet experiment code because most harmful capabilities are restricted. As a result, \sysname is able to maintain containment of experiment code despite bugs in libraries.
  
-\section{Deployment}
-Deploying \sysname in a real-world setting is essential to study and evaluate bandwidth performance and wireless performance under the conditions found in a real network (client diversity, mobility, interference with nearby networks). For our study, we deploy TP-Link TL-WDR3600 router, which has a 560 MHz MIPS processor, 8MB of flash storage, 128MB of RAM and a dual-band wireless interface. We replace the router's default software with a custom version of OpenWrt Chaos Calmer~\cite{openwrt}. Some users can download the \sysname package from our project page and install it on their own hardware via OPKG package manager.
-

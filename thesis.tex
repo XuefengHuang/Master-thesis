@@ -1,11 +1,16 @@
-\documentclass[11pt]{report}
-\usepackage{geometry}                		
+\documentclass[12pt]{report}
+\usepackage[top=1in, bottom=1in, left=1.5in, right=1in]{geometry}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}             		
 \usepackage{graphicx}
 \usepackage{subcaption}
-\usepackage{array}					
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{amsmath}					
 \usepackage[backend=biber]{biblatex}
 \addbibresource{thesis.bib}
 \usepackage[utf8]{inputenc}
+\usepackage[titletoc]{appendix}
 \newcommand{\sysname}{SOAR }
 \newcommand{\sandboxname}{SOAR-Repy }
 
@@ -16,6 +21,9 @@
 
 \begin{document}
 \maketitle
+\tableofcontents
+\listoffigures
+\listoftables
 \input{abstract.tex}
 
 %\section{}
@@ -25,6 +33,10 @@
 \input{design.tex}
 \input{implementation.tex}
 \input{evaluation.tex}
+\input{conclusion.tex}
+\begin{appendices}
+\input{AppendixA.tex}
+\end{appendices}
 \newpage
 \printbibliography
 %\bibliographystyle{plain}

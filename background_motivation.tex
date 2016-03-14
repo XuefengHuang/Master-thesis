@@ -5,9 +5,9 @@ In this section, we present some background information on factors that shaped t
 \section{Related Work}
 \label{ssec.related_work}
 Our work shares goals with and builds upon ideas from several prior large-
-scale platforms targeting home network research. In the following paragraphs, we briefly review related works on network testbed. 
+scale platforms targeting home network research. In the following paragraphs, we briefly review related works on network testbeds and home network measurements. 
 
-The BISmark~\cite{183951} project aims at understanding the performance of 
+\textbf{Measurement platforms. }The BISmark~\cite{183951} project aims at understanding the performance of 
 wired access networks in homes through the long-term deployment of gateways. 
 We use a similar approach but focus on building a programming framework to 
 balance between flexibility (allowing researchers to do a wide set of 
@@ -27,6 +27,8 @@ procedure and software in the course of a measurement study. \sysname instead al
 Prior works such as~\cite{sanchez2014measurement},~\cite{dhawan2012fathom},~\cite{kreibich2010netalyzr} has focused on end-host techniques for measuring end to end performance in home networks. Dasu~\cite{sanchez2014measurement} is a host-based software that analyzes BitTorrent traffic to characterize ISP performance. Because Dasu piggybacks on BitTorrent, it has a large user base. Fathom~\cite{dhawan2012fathom} is a Firefox extension that provides a programmable interface for writing and launching measurements from the convenience of the web browser. Netalzyr~\cite{kreibich2010netalyzr} also lets users conduct a series of tests from a browser. However, these testbeds cannot support for continuous measurements (i.e., since hosts can be turned off, moved, etc.). In additional, they do not reflect the performance of a fixed network vantage point due to the limitation of host. Our work extends on Seattle Testbed\cite{cappos2009seattle}, which runs on laptops, tablets and smartphones. In contrast to Seattle Testbed, our platform is deployed in home networks on resource-constrained devices and extends eight capabilities based on Seattle sandbox.
 
 Most active measurement and experimentation research relies on dedicated infrastructures (PlanetLab~\cite{chun2003planetlab}, MLab~\cite{mlab}). However, such infrastructures support long-running measurements at cost of limited vantage point diversity because nodes primarily deployed in well-provisioned academic or research networks which are not representative of the real users' Internet. In \sysname, experiments can observe all traffic passing through home wireless router. Scriptroute~\cite{spring2003scriptroute} added the capability for any researchers to run experiments using scripts in a sandboxed environment in PlanetLab. We share Scriptroute's goal of building a community platform for network measurements. However, \sysname is intended for large scale deployment on home wireless routers brings new challenges in particular: resource limitations and home network security.
+
+\textbf{Measuring home network performance.} There has been significant interest in measuring home networks. Previous studies \cite{aguayo2004link}\cite{kotz2005analysis}\cite{raman2009feasibility} have evaluated the performance of 802.11 wireless networks in campus, enterprise, urban and rural environments. However, there are limited studies on wireless home networks. Recent studies ave tried to measure home networks in various ways, from the end-host \cite{chetty2011my}\cite{dicioccio2012probe}\cite{sanchez2013trying}, or from gateway routers\cite{grover2013peeking}\cite{sundaresan2015measuring}\cite{patro2013observing}\cite{sundaresan2013measuring}\cite{papagiannaki2006experimental}\cite{pefkianakis2015characterizing}. We share \cite{sundaresan2015measuring}'s idea of studying how home wireless performance characteristics affect the performance the user traffic in real homes. However, we study wireless performance in concert with airtime utilization.
 
 \section{Goals}
 \label{ssec.goals}
