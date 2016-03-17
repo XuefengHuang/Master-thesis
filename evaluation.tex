@@ -1,6 +1,6 @@
 \chapter{Evaluation} 
 \label{sec.evaluation}
-In this section, we demonstrate SOAR's utility by implementing two example use cases that together play different types of its API: comparing the performance of 2.4 GHz and 5 GHz bands and studying channel survey statistics. Our goal is to illustrate how \sysname can support a variety of measurement needs.
+In this section, we demonstrate SOAR's utility by implementing two example use cases that together play different types of its API: comparing the performance of 2.4 GHz and 5 GHz bands, studying channel survey statistics and home wireless environment. Our goal is to illustrate how \sysname can support a variety of measurement needs.
 \section{Method}
 \subsection{Measurements}
 \label{ssec.measurements}
@@ -81,8 +81,6 @@ We see that the use of 5 GHz improves performance, reducing channel utilization,
 
 \textbf{TCP round-trip time is similar on 2.4 GHz and 5 GHz band.} We calculate TCP round-trip time as follows: using the home router as vantage point and calculate the time between a TCP packet coming and its respective TCP acknowledgement from a connected client. We collected the TCP round-trip between the wireless home router and a wireless client on 2.4 GHz and 5 GHz band. Figure \ref{fig:tcprtt} plots the CDF of the TCP round-trip times for all network traffic for both the 2.4 GHz band and the 5 GHz bands. The result shows that TCP round-trip time on 2.4 GHz and 5 GHz band are similar.
 
-\textbf{Within a home network, individual devices experience different wireless performance at different time.} Figure \ref{fig:compare} uses the WiFi data set to show throughput of wireless network during each hour of day, partitioned into weekday and weekend. We observe a diurnal throughput in home network in a office building at various times of day on a weekday and weekend. We see that throughput is higher at weekend than weekday, which may result from there are less external interference (e.g., surrounding access points, clients).
-
 \begin{figure}
 \centering
 \includegraphics[width=0.5\textwidth]{figure/bitrate(weekday_vs_weekend).png}
@@ -96,7 +94,7 @@ We see that the use of 5 GHz improves performance, reducing channel utilization,
 \begin{figure}
 \centering
 \includegraphics[width=0.5\textwidth]{figure/channel.png}
-\caption{Channel survey.} 
+\caption{Channel survey metrics.} 
 \label{fig:channelsurvey}
 \end{figure}
 
@@ -120,3 +118,19 @@ External Interference & -0.031 \\
 \caption{Correlation of metrics with the observed TCP throughput.}
 \label{table: Correlation}
 \end{table*}
+
+\section{Usecase: Studying home wireless environment}
+\label{sec.usecase3}
+
+\textbf{Within a home network, individual devices experience different wireless performance at different time.} Figure \ref{fig:compare} uses the WiFi data set to show throughput of wireless network during each hour of day, partitioned into weekday and weekend. We observe a diurnal throughput in home network in a office building at various times of day on a weekday and weekend. We see that throughput is higher at weekend than weekday, which may result from there are less external interference (e.g., surrounding access points, clients).
+
+\textbf{Home WiFi neighbourhood.} We next leverage the feedback from our platform to analyse its WiFi neighbourhoods. Overall, we observe the number of neighbouring SSIDs around our wireless router which is located in an office building. The number of neighbouring SSIDs varies between 26 and 64. The average number is around 46.45. We also observe network density in the night (between 0:00 am and 6:00 am), the average number is around 48.83. Therefore, the network density does not vary a lot in the day and night (possibly companies do not shut down their routers after work time).
+
+\begin{figure}
+\centering
+\includegraphics[width=0.8\textwidth]{figure/2GHz_WiFi_channels.png}
+\caption{There are three channels that do not overlap in the on 2.4 GHz : 1, 6 and 11.} 
+\label{fig:channels}
+\end{figure}
+
+In the 2.4 GHz band, 1, 6 and 11 are the only non-overlapping channels. Selecting one or more of these channels is an important part of setting up your network correctly. As we can see from \ref{fig:channels}, co-channel interference is where devices take turns talking, so the more devices on one channel, the longer it takes for a device to talk since it has to wait for its turn. In our dataset we find that access points in this building mostly use channel 1, 6, and 11. Specifically, 42\% of access points use channel 6, 21\% of access points use channel 1, 28\% of access points use channel 11 and the rest use overlapping channels. In general, we expect there are equal network traffic in channel 1, 6, 11, respectively. However,  many wireless routers automatically select the channel for you upon initial setup, it could lead to slow Wi-Fi speeds and interference. 
