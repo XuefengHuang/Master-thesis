@@ -1,4 +1,4 @@
-\chapter{Evaluation} 
+\chapter{EVALUATION} 
 \label{sec.evaluation}
 In this section, we demonstrate SOAR's utility by implementing two example use cases that together play different types of its API: comparing the performance of 2.4 GHz and 5 GHz bands, studying channel survey statistics and home wireless environment. Our goal is to illustrate how \sysname can support a variety of measurement needs.
 \section{Method}
@@ -7,9 +7,9 @@ In this section, we demonstrate SOAR's utility by implementing two example use c
 
 We perform both hybrid measurements of network traffic from home wireless access point and correlate those measurements with the wireless metrics for the corresponding traffic. Passive measurements reflect the actual performance more accurately. Unlike passive measurement, active measurements generate additional network traffic that are sent over the network to, for example, measure the time it takes for the packet to reach the other end of the network (TCP RTT) and the available capacity of a wireless network. However, active measurements might introduce contention or disturb the normal traffic flow. Combining active and passive measurements is called hybrid measurements. 
 
-To generate the maximum possible send/receive rate that \sysname can achieve. we use \textit{socket.send}/\textit{socket.recv} within a tight loop and using a timer to saturate the available network bandwidth. We perform all tests between a client and a home access point. We collect network traffic statistics and channel survey information from both wireless interfaces on the access point. The data collection on the access point is done by periodically querying some data exposed by our platform's supported API (e.g, \textit{get\_network\_bytes} and \textit{wifi\_status}). Our sandbox environment ensure that monitoring should not have any negative impact on the routers. 
+To generate the maximum possible send/receive rate that \sysname can achieve. we use \texttt{socket.send}/\texttt{socket.recv} within a tight loop and using a timer to saturate the available network bandwidth. We perform all tests between a client and a home access point. We collect network traffic statistics and channel survey information from both wireless interfaces on the access point. The data collection on the access point is done by periodically querying some data exposed by our platform's supported API (e.g, \texttt{get\_network\_bytes} and \texttt{wifi\_status}). Our sandbox environment ensure that monitoring should not have any negative impact on the routers. 
  
-\subsection{Deployment}
+\subsection{Deployment Experience}
 \label{ssec.deployment}
 
 We deploy our platform on a TP-Link TL-WDR3600 router, which has a 560 MHz MIPS processor, 8MB of flash storage, 128MB of RAM and a dual-band wireless interface. We replace the router's default software with a custom version of OpenWrt Chaos Calmer~\cite{openwrt}. The 802.11 interface operates at both 2.4 GHz and 5 GHz bands. The location is in NYU campus, which is an office building. 
@@ -29,7 +29,7 @@ Our metrics are based on supported APIs provided by \sysname. We use channel bus
 
 \textbf{TCP round-trip time (RTT):} RTT is the difference between the time of the data and SYN packets and its corresponding acknowledgements. As this RTT increases, it can have an adverse impact on performance, especially for applications that are latency sensitive. Measuring the RTT between the access point and the home devices is important for us to understand wireless performance.
 
-\textbf{Additional metrics:} Our platform reports each station's \textit{tx} retries and\textit{tx}  failed. \textit{tx}  retries and \textit{tx} failed are reported only in downlink (gateway to station) and we use them as an additional performance indicator. Finally, our platform also reports unix timestamp along with other metrics. This is used to help me calculate throughput and study network usage pattern. 
+\textbf{Additional metrics:} Our platform reports each station's \texttt{tx} retries and\texttt{tx}  failed. \texttt{tx}  retries and \texttt{tx} failed are reported only in downlink (gateway to station) and we use them as an additional performance indicator. Finally, our platform also reports unix timestamp along with other metrics. This is used to help me calculate throughput and study network usage pattern. 
 
 \section{Usecase: Comparing the wireless performance of 2.4 GHz and 5 GHz bands}
 \label{sec.usecase1}
@@ -68,14 +68,14 @@ For this experiment, the router that we use enables both 2.4 GHz and 5 GHz radio
 \label{fig:5gvs2g}
 \end{figure}
 
-\textbf{2.4 GHz vs. 5 GHz:} We use throughput, channel utilization, retransmission times and external interference as our indicator of wireless performance because we can obtain these metrics easily from our supported APIs. We calculate throughput as follows: using \textit{get\_network\_bytes} to provide TCP statistics. We study the aggregate TCP throughput achieved during the captured lifetime of the network traffic. We compute the average throughput at every one-second interval by the divisor of aggregate TCP throughput and the difference between the correspond timestamp. \textit{get\_station} can help us obtain the number of retry packets at each clients. We also compute channel utilization and external interference as the percentage of channel busy time and external interference time in any given one-second interval. 
+\textbf{2.4 GHz vs. 5 GHz:} We use throughput, channel utilization, retransmission times and external interference as our indicator of wireless performance because we can obtain these metrics easily from our supported APIs. We calculate throughput as follows: using \texttt{get\_network\_bytes} to provide TCP statistics. We study the aggregate TCP throughput achieved during the captured lifetime of the network traffic. We compute the average throughput at every one-second interval by the divisor of aggregate TCP throughput and the difference between the correspond timestamp. \texttt{get\_station} can help us obtain the number of retry packets at each clients. We also compute channel utilization and external interference as the percentage of channel busy time and external interference time in any given one-second interval. 
 
 We see that the use of 5 GHz improves performance, reducing channel utilization, external interference and retransmission rate. Figure \ref{fig:throughput} shows the network traffic in the 5 GHz band achieve higher throughput. Figure \ref{fig:utilization} shows the channel utilization in 2.4 GHz are much higher than 5 GHz. Figure \ref{fig:retries} shows the retransmission times per 40 seconds; the result shows that transmissions are more common in the 2.4 GHz band. Figure \ref{fig:interference} plots the CDF of the external interference for all network traffic for both the 2.4 GHz band and the 5 GHz bands. The 5 GHz band has less interference as signal does not propagate well through walls. A limiting factor to identify the real wireless performance is the lack of contention and feedback from external sources (i.e., local contention and non-WiFi wireless devices). However, we still leverage channel busy time to detect airtime utilization.
 
 \begin{figure}
 \centering
 \includegraphics[width=0.5\textwidth]{figure/tcp_rtt.png}
-\caption{LAN TCP round-trip time for different bands. } 
+\caption{LAN TCP round-trip time for different bands.} 
 \label{fig:tcprtt}
 \end{figure}
 
@@ -100,7 +100,7 @@ We see that the use of 5 GHz improves performance, reducing channel utilization,
 
 Measurement studies show that congestion in a wireless network leads to lower overall network throughput and capability. The lack of techniques to identify and characterize congestion in wireless networks has prevented relevant research. To better understand congestion in wireless networks, \sysname provides the capabilities to explore radio channel channel utilization data. 
 
-As \cite{channelsurvey} did before, we replicated this experiment through our \sysname platform. We use \textit{wifi\_status} to collect channel busy time, active time, transmit time and receive time. Figure \ref{fig:channelsurvey} shows the channel survey statistics captured in 2.4 GHz band. We find that channel active time is the same as running time if you don't change channels. Channel busy time seems to be the same as the sum of transmit time and receive time, unless there is a lot of external interference (e.g, heavy external traffic on the same channel, non-WiFi devices).
+As \cite{channelsurvey} did before, we replicated this experiment through our \sysname platform. We use \texttt{wifi\_status} to collect channel busy time, active time, transmit time and receive time. Figure \ref{fig:channelsurvey} shows the channel survey statistics captured in 2.4 GHz band. We find that channel active time is the same as running time if you don't change channels. Channel busy time seems to be the same as the sum of transmit time and receive time, unless there is a lot of external interference (e.g, heavy external traffic on the same channel, non-WiFi devices).
 
 Next, we study the potential indicator can cause the degradation of a wireless performance. We therefore investigate this, by correlating the throughput (which can be caused by interference) with the airtime utilization and external interference. Interestingly, we find that there is no strong correlation between wireless performance and airtime utilization or external interference. Table \ref{table: Correlation} shows the correlation between these indicators available at the AP and the observed TCP throughput from our continuous measurements. We observe that, lower airtime utilization does not necessarily result in higher TCP throughput. Note that we need to interpret our findings. First, the TCP traffic do not saturate the wireless link. This is because our platform is deployed on resource-constrained devices. Therefore, we do not have fine-grained feedback of highest airtime utilization or external interference. Second, our platform does not capture all the activity on the home wireless network, which would allow us to gain deeper insights for the correlation between throughput and airtime utilization. 
 

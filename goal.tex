@@ -1,0 +1,32 @@
+\chapter{CHALLENGES AND GOALS}
+\label{sec.goals_challenges}
+\section{Challenges}
+\label{ssec.challenges}
+A testbed that allows researchers to execute code across donated embedded devices faces four major challenges: 
+\begin{itemize}
+\item First, the embedded devices poses a limited resources challenge. It is hard to run heavy scripting languages like Python or Ruby. Unlike host-based or fixed server network testbed, router-based network testbed deploy on resource-constrained devices which have too little RAM and flash storage. Therefore, our platform must be small and easy-to-deploy. To overcome this challenge, BISmark uses standard UNIX utilities and small C programs with shell and Lua scripts.  
+\item The second challenge is user's network experience. \sysname is on the direct path of real Internet users. A malicious network measurement experiment will noticeably affect a normal user's network experience by consuming too much network resources. Therefore, our platform must ensure that a poorly designed experiment cannot disrupt a normal user's Internet connectivity. It is also a challenge for BISmark. To fix this issue, BISmark has to review each experiment codes manually. Dasu uses a sandboxed environment for safe execution of experiment and limits resource consumption. However, it uses Drools so that we need to port from Java.
+\item The third challenge is to reconcile the need for open data with user privacy. Since home router connects to many devices in home networks, they can generate valuable data for home network research study. However, these valuable data can also threaten user privacy. For example, network traffic statistics can yield insight into user behaviour and then indicate when users are home and using the network. Due to these concerns, network testbed either do not collect data from real Internet users or use data collected from a controlled group of participants. Home users want information security and researchers want to gather data and information. Therefore, it is difficult to balance data collection with privacy protection.
+\item Further challenges remain regarding software upgrades. Unlike PlanetLab nodes deploy in universities, network testbed in home networks cannot get enough technical supports. In addition, OpenWrt's built-in \texttt{opkg} lacks features for managing software in the homes of non-technical users. Therefore, software management is a big challenge for \sysname.  
+\end{itemize}
+As the development of hardware technology and based on our previous practical experience, running Python codes are going well on embedded devices. We have ported \sysname onto home wireless router in \S{\ref{ssec.deployment}} and ran many network measurements (including multithreading, network programming, file handling, etc) in \S{\ref{sec.evaluation}}. And the second and third challenges can be solved via using a secure and performance-isolated sandbox (see \S{\ref{sec.sandbox}}) and a reference monitor framework (see \S{\ref{sec.policy}}) we proposed. Finally, \sysname provides software updater (see \S{\ref{sec.softwareupdater}}) to make sure system robustness.
+
+\section{Goals}
+\label{ssec.goals}
+The goal of \sysname is to provide a scalable platform for running meaningful network experiments in the home networks. It is designed to achieve:
+\begin{itemize}
+\item Safety: Internet users that participate in the testbed should not face significant risk. Code should be strictly sandboxed. Code executed on the testbed must not interfere with the performance or correctness of user's Internet connection. As mentioned in \S{\ref{ssec.threat_models}}, there are a few potential risks in home networks, therefore we design a network measurement platform with user security and privacy as a first-order concern.
+
+\item Privacy: Our goal is striving to maximize utility to experimenters while not compromising the privacy of the user (e.g., expose home network usage behaviour).
+
+\item Flexibility: The related works in \S{\ref{ssec.related_work}} show that a good network measurement platform should support for both passive and active measurements. Passive measurements provide precise and continuous understanding of network and active measurements provide some insight into the way real network traffic is treated within the network. We therefore require a wide range of APIs that support the implementation of as wide an array of network measurements as possible.
+
+\item Lightweight: We desire the platform's weight to be as light as possible for two reasons: (i) Due to \sysname is deployed in home networks on resource-constrained devices, it is impossible to run heavy softwares. (ii) \sysname nodes are on the direct path of real Internet users, hence we don't want to impact users' Internet connectivity.
+
+\item Accuracy: We desire the measurement platform to accurately track 
+general network information. Precise experiment data is able to help researchers study and understand network better.
+
+\item Easy to install and use: Unlike computer or mobile environments, home wireless routers are not familiar to most people. Therefore, installing is a big challenge. We require to provide an installer to help users to install, un-install, and stop easily.
+\end{itemize}
+
+\sysname's design (\S\ref{sec.design}) addresses the first three goals and its implementation (\S\ref{sec.implementation}) the remaining goals.

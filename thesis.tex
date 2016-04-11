@@ -4,7 +4,9 @@
 \renewcommand{\familydefault}{\sfdefault}             		
 \usepackage{graphicx}
 \usepackage{subcaption}
+\usepackage{pdfpages}
 \usepackage{booktabs}
+\usepackage{latexsym}
 \usepackage{array}
 \usepackage{amsmath}					
 \usepackage[backend=biber]{biblatex}
@@ -14,13 +16,9 @@
 \newcommand{\sysname}{SOAR }
 \newcommand{\sandboxname}{SOAR-Repy }
 
-\title{\textbf{SOAR: An experimental platform for home WiFi router} \\
-        {New York University} \\}
-\author{Xuefeng Huang}
-%\date{}							% Activate to display a given date or no date
 
 \begin{document}
-\maketitle
+\includepdf[pages={1-2}]{./cover/titlepage.pdf}
 \tableofcontents
 \listoffigures
 \listoftables
@@ -29,7 +27,8 @@
 %\section{}
 %\subsection{}
 \input{intro.tex}
-\input{background_motivation.tex}
+\input{related_work.tex}
+\input{goal.tex}
 \input{design.tex}
 \input{implementation.tex}
 \input{evaluation.tex}

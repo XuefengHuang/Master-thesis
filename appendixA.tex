@@ -1,5 +1,6 @@
 \chapter{SOAR API}
 \label{AppendixA}
+{\raggedright
 \textbf{get\_network\_bytes(interface)}
 \begin{itemize}
 \item Purpose:
@@ -27,8 +28,7 @@ Consumes 4K of procfsread.
 
 \item Returns:
 
-Network usage info as a dict such as \{'trans':'59528148','recv':'1366399094',
-'rx\_error':'0','tx\_error':'0','rx\_drop':'0','tx\_drop': 0\}.
+Network usage info as a dict such as \{'trans':'59528148','recv':'1366399094','rx\_error':'0','tx\_error':'0','rx\_drop':'0','tx\_drop': 0\}.
 \end{itemize}
 
 \textbf{get\_network\_packets(interface)}
@@ -58,9 +58,7 @@ Consumes 4K of procfsread.
 
 \item Returns:
 
-Network usage info as a dict such as \{'trans':'598602','recv':
-
-'1262217','rx\_error':'0','tx\_error':'0','rx\_drop':'0','tx\_drop': 0\}.
+Network usage info as a dict such as \{'trans':'598602','recv':'1262217','rx\_error':'0','tx\_error':'0','rx\_drop':'0','tx\_drop': 0\}.
 \end{itemize}
 
 \textbf{get\_network\_interface()}
@@ -113,10 +111,7 @@ None.
 
 \item Returns:
 
-station statistic information as a dict such as [\{'signal':'77[78,83] dBm','station':
-'54:4e:90:06:f3:6f','tx bitrate':'57.8 MBit/s MCS 5 short GI','rx bitrate':'1.0 MBit/s',
-'signal\_avg':'88[90,92] dBm','ip':'192.168.1.109'\}, \{'signal':'40[42,44] dBm','station':
-'ac:81:12:53:8e:0f','tx bitrate':'65.0 MBit/s MCS 6 short GI','rx bitrate':'18.0 
+station statistic information as a dict such as [\{'signal':'77[78,83] dBm','station':'54:4e:90:06:f3:6f','tx bitrate':'57.8 MBit/s MCS 5 short GI','rx bitrate':'1.0 MBit/s','signal\_avg':'88[90,92] dBm','ip':'192.168.1.109'\}, \{'signal':'40[42,44] dBm','station':'ac:81:12:53:8e:0f','tx bitrate':'65.0 MBit/s MCS 6 short GI','rx bitrate':'18.0 
 MBit/s','signal\_avg':'42[44,48]dBm','ip':'192.168.1.143'\}].
 \end{itemize}
 
@@ -163,9 +158,7 @@ None.
 
 \item Returns:
 
-A list of WiFi channel information such as [\{'transmit\_time':'0 ms','frequency':
-
-'2412 MHz','busy\_time':'16 ms','receive\_time':'11 ms','active\_time':'24 ms'\},
+A list of WiFi channel information such as [\{'transmit\_time':'0 ms','frequency':'2412 MHz','busy\_time':'16 ms','receive\_time':'11 ms','active\_time':'24 ms'\},
 
 \{'transmit\_time':'1070113 ms','frequency':'2462 MHz [in use]','busy\_time':'22421480 
 
@@ -238,6 +231,6 @@ This operation consumes network bandwidth of 256 * count bytes netrecv, 256 * co
 
 \item Returns:
 
-ping statistics as a dict, such as \{'avg':'27.302','min':'14.861','host':'192.168.1.1',
-'max':'39.743','loss\_rate': 0.0\}.
+ping statistics as a dict, such as \{'avg':'27.302','min':'14.861','host':'192.168.1.1','max':'39.743','loss\_rate': 0.0\}.
 \end{itemize}
+\par}
