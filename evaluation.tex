@@ -1,13 +1,13 @@
 \chapter{EVALUATION} 
 \label{sec.evaluation}
-In this section, we demonstrate SOAR's utility by implementing three example use cases that together play different types of its API: comparing the performance of 2.4 GHz and 5 GHz bands, studying channel survey statistics and home wireless environment. Our goal is to illustrate how \sysname can support a variety of measurement needs.
+In this section, we demonstrate SOAR's utility by implementing three example use cases that together ``play'' different types of its API: comparing the performance of 2.4 GHz and 5 GHz bands, studying channel survey statistics and home wireless environment. Our goal is to illustrate how \sysname can support a variety of measurement needs.
 \section{Method}
 \subsection{Measurements}
 \label{ssec.measurements}
 
 We perform both active and passive measurements of network traffic from home wireless access point and correlate those measurements with the wireless metrics for the corresponding traffic. Passive measurements reflect the actual performance more accurately. Unlike passive measurement, active measurements generate additional network traffic that are sent over the network to, for example, measuring the time it takes for the packet to reach the other end of the network (TCP RTT) and the available capacity of a wireless network. However, active measurements might introduce contention or disturb the normal traffic flow. Combining active and passive measurements is called hybrid measurements. 
 
-To generate the maximum possible send/receive rate that \sysname can achieve. we use \texttt{socket.send}/\texttt{socket.recv} within a tight loop and using a timer to saturate the available network bandwidth. We perform all tests between a client and a home access point. We collect network traffic statistics and channel survey information from both wireless interfaces on the access point. The data collection on the access point is done by periodically querying some data exposed by our platform's supported API (e.g, \texttt{get\_network\_bytes} and \texttt{wifi\_status}). Our sandbox environment ensure that monitoring should not have any negative impact on the routers. 
+To generate the maximum possible send/receive rate that \sysname can achieve. we use \texttt{socket.send}/\texttt{socket.recv} within a tight loop and using a timer to saturate the available network bandwidth. We perform all tests between clients on the same wireless network and the home access point. We collect network traffic statistics and channel survey information from both wireless interfaces on the access point. The data collection on the access point is done by periodically querying some data exposed by our platform's supported API (e.g, \texttt{get\_network\_bytes} and \texttt{wifi\_status}). Our sandbox environment ensure that monitoring should not have any negative impact on the routers. 
  
 \subsection{Deployment Experience}
 \label{ssec.deployment}
@@ -27,7 +27,7 @@ Our metrics are based on supported APIs provided by \sysname. We use channel bus
 
 \textbf{Achieved throughput:} Our platform periodically (30 seconds) reports the actual throughput for each interfaces. Achieved throughput is the actual total number of bytes over time, and it captures the actual demand on the wireless network. This metric depends on the experiment's data rate and is bounded by the wireless effective throughput. The throughput is computed as the transmitted bytes over one second period.
 
-\textbf{TCP round-trip time (RTT):} RTT is the difference between the time of the data and SYN packets and its corresponding acknowledgements. As this RTT increases, it can have an adverse impact on performance, especially for applications that are latency sensitive. Measuring the RTT between the access point and the home devices is important for us to understand wireless performance.
+\textbf{TCP round-trip time (RTT):} RTT is the difference between the time of the data and TCP SYN packets and its corresponding acknowledgements. As this RTT increases, it can have an adverse impact on performance, especially for applications that are latency sensitive. Measuring the RTT between the access point and the home devices is important for us to understand wireless performance.
 
 \textbf{Additional metrics:} Our platform reports each station's \texttt{tx} retries and \texttt{tx} failed. \texttt{tx} retries and \texttt{tx} failed are reported only in downlink (gateway to station) and we use them as an additional performance indicator. Finally, our platform also reports unix timestamp along with other metrics. This is used to help me calculate throughput and study network usage pattern. 
 
@@ -75,7 +75,7 @@ We see that the use of 5 GHz improves performance, reducing channel utilization,
 \begin{figure}
 \centering
 \includegraphics[width=0.5\textwidth]{figure/tcp_rtt.png}
-\caption{LAN TCP round-trip time for different bands.} 
+\caption{LAN TCP round-trip time for different bands (e.g,. 2 GHz, 5 GHz).} 
 \label{fig:tcprtt}
 \end{figure}
 
@@ -84,7 +84,7 @@ We see that the use of 5 GHz improves performance, reducing channel utilization,
 \begin{figure}
 \centering
 \includegraphics[width=0.5\textwidth]{figure/bitrate(weekday_vs_weekend).png}
-\caption{Bitrate on weekday and weekend. Weekend bitrate is more than weekday bitrate.} 
+\caption{Bitrate on weekday and weekend in an office building in NYU Brooklyn campus. Weekend bitrate is more than weekday bitrate.} 
 \label{fig:compare}
 \end{figure}  
 
@@ -94,7 +94,7 @@ We see that the use of 5 GHz improves performance, reducing channel utilization,
 \begin{figure}
 \centering
 \includegraphics[width=0.5\textwidth]{figure/channel.png}
-\caption{Channel survey metrics.} 
+\caption{Channel survey metrics in 2.4 GHz band through \texttt{wifi\_status}.} 
 \label{fig:channelsurvey}
 \end{figure}
 
@@ -124,7 +124,7 @@ External Interference & -0.031 \\
 
 \textbf{Within a home network, individual devices experience different wireless performance at different time.} Figure \ref{fig:compare} uses the WiFi data set to show throughput of wireless network during each hour of day, partitioned into weekday and weekend. We observe a diurnal throughput in home network in a office building at various times of day on a weekday and weekend. We see that throughput is higher at weekend than weekday, which may result from there are less external interference (e.g., surrounding access points, clients).
 
-\textbf{Home WiFi neighbourhood.} We next leverage the feedback from our platform to analyse its WiFi neighbourhoods. Overall, we observe the number of neighbouring SSIDs around our wireless router which is located in an office building. The number of neighbouring SSIDs varies between 26 and 64. The average number is around 46.45. We also observe network density in the night (between 0:00 am and 6:00 am), the average number is around 48.83. Therefore, the network density does not vary a lot in the day and night (possibly companies do not shut down their routers after work time).
+\textbf{Home WiFi neighbourhood.} We next leverage the feedback from our platform to analyse its WiFi neighbourhoods. Overall, we observe the number of neighbouring SSIDs around our wireless router which is located in an office building. The number of neighbouring SSIDs varies between 26 and 64. The average number is around 46.45. We also observe network density in the night (between 0:00 am and 6:00 am), the average number is around 48.83. Therefore, the network density does not vary a lot in the day and night (possibly employees work late or there is no automation to manage these wireless routers).
 
 \begin{figure}
 \centering

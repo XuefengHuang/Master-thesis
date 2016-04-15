@@ -122,22 +122,10 @@ We begin by presenting examples of measurement efforts that benefit from the pla
 \label{sec.security}
 With the rapid development of smart home, it becomes essential to focus on home network security and privacy. Since \sysname deploys on the home wireless router, any bugs may bring a significant impact to home networks. For instance, attackers may obtain the control authority of the home networks through a malicious attack. 
 
-To understand how to prevent attacks, we first considered the different kinds of attacks. A sample of known network attacks is listed in Table~\ref{table: attack}. We observe that these attacks fall into three types: (i) Denial-service attack: overwhelm targets with a flood of network traffic to run out of end host resources, (ii) Injection attack: create a few ``magic'' packets to implement spoof attack or exploit attack. (iii) Insider attack: malicious insiders intentionally eavesdrop, steal, or damage information to violate user's privacy.
+To understand how to prevent attacks, we first considered the different kinds of attacks. We observe that these attacks fall into three types: (i) Denial-service attack (e.g., Packet flooding, SYN flooding\cite{eddy2011syn}): overwhelm targets with a flood of network traffic to run out of end host resources, (ii) Injection attack (e.g., Remote exploits\cite{shellcode},  spoofing attack\cite{bishop1996attack}): create a few ``magic'' packets to implement spoof attack or exploit attack. (iii) Insider attack (e.g., Network eavesdropping): malicious insiders intentionally eavesdrop, steal, or damage information to violate user's privacy.
 
-\begin{table*}[]
-\centering
-\begin{tabular}{|l|l|l}
-\cline{1-2}
-Classes of attack     & Example                                 &  \\ \cline{1-2}
-Denial-service attack & Packet flooding, SYN flooding\cite{eddy2011syn}             &  \\ \cline{1-2}
-Injection attack      & Remote exploits\cite{shellcode},  spoofing attack\cite{bishop1996attack} &  \\ \cline{1-2}
-Insider attack        & Network eavesdropping                   &  \\ \cline{1-2}
-\end{tabular}
-\caption{Common known attacks in networks.}
-\label{table: attack}
-\end{table*}
-
-To prevent these three types of attacks, \sysname uses a sandboxes environment named Repy for security isolation and performance isolation. 
+To prevent these three types of attacks, \sysname uses a sandboxes environment named Repy for security isolation and performance isolation.
+ 
 \begin{itemize} 
 \item \textbf{Security isolation:} The sandbox must be able to ensure the execution safety of experiment code while representing as little risk to host as possible. The Repy sandbox in \sysname uses language-based isolation and is implemented in Python. In addition, Repy uses security layer to push library functionality out of the sandbox kernel, thereby helping to mitigate the impact of bugs in libraries~\cite{cappos2010retaining}. As a result, experimenter can enforce a policy upon a Repy sandbox without needing to change the TCB (trusted computing base).  
 \item \textbf{Performance isolation:} Resource consumption is the biggest issue for a distributed system. Especially when we are in the home networks and need to share our platform with unidentified home wireless routers. The rate of resource consumption may degrade the performance of itself and others in real network when vulnerabilities comes into effect\cite{joshi2013survey}. Therefore, \sysname must control the load its experiments impose on the routers, as well as minimize the impact of real user's network connectivity. To achieve it, \sysname should limit consumption of host's resources, include the amount of CPU and memory used, network and disk I/O. To control CPU and memory utilization, \sysname monitors the amount of CPU and memory available to a experiment. To control network and disk I/O, \sysname checks calls that access these resources and prevents their execution if they exceed a predefined limits. 
