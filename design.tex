@@ -1,49 +1,153 @@
 \chapter{\sysname DESIGN}
 \label{sec.design}
-Our goal is to build a secure network testbed that can mitigate the problem 
-of end user's security and privacy issues. 
+Our goal is to build a secure network testbed that can mitigate the problem
+of end user's security and privacy issues.
 
-The previous works introduced in \S{\ref{ssec.related_work}} serves the purpose of understanding the features of current network testbeds. Our finding in \S{\ref{sec.relatedwork_motivation}} suggest that it is important to balance the trade-off between security and functionality.
+The previous works introduced in \S{\ref{ssec.related_work}} serve the purpose of understanding the features of current network testbeds. Our finding in \S{\ref{sec.relatedwork_motivation}} suggest that it is important to balance the trade-off between security and functionality.
 
-In this section, we use this idea to guild our new design for building secure network testbed. Our goal is to allow researchers to run experiments while reducing the risk of security and privacy problem.
+In this section, we use this idea to guild our new design for building a secure
+ network testbed. Our goal is to allow researchers to run experiments while
+ reducing the risk of security and privacy problems.
 
 \section{Overview}
-Today's poor visibility into the home networks hampers progress in a number of important research areas, from WiFi management strategies to broadband characterization. Previous works~\cite{sanchez2014measurement}~\cite{dhawan2012fathom} usually provides a programmable interface for writing and launching measurements from the perspective of end systems. Our proposed approach in supporting a wide range of measurements is using a programmable interface as well. Unlike such prior network measurement efforts, our work places network measurement capabilities embedded into home gateway. This approach has various unique advantages: (i) our platform is able to observe all traffic to and from its clients without missing any network traffic. (ii) home gateway is ``demarcation point'' between the home wireless network and the access link so that it is the best place to learn about wired and wireless network. Although BISmark~\cite{183951} has been worked on deploying measurements through the long-term deployment of gateways in homes, it has several security issues that might cripple a user's Internet connection (e.g., malicious codes might run out of router's resource). \sysname instead allows untrusted parties to run any experiment codes on our platform via a programmable interface and resource protection framework. An user can let a third party have access to their network traffic data within a security and performance isolated virtual machine. Users not only are able to control how much information they would share with the rest of world, but also decide how many resources an application can use. For example, an experiment could be prevented when consuming so much resources or access specific interfaces which are not allowed by device's owner. 
+Today's lack of knowledge about home networks hampers progress in a number of
+important research areas, from WiFi management strategies to broadband characterization.
+Previous works~\cite{sanchez2014measurement}~\cite{dhawan2012fathom} usually provide
+ a programmable interface for writing and launching measurements from the perspective of
+end systems. Our proposed approach in supporting a wide range of measurements uses
+a programmable interface as well. Unlike such prior network measurement efforts,
+ our work embeds network measurement capabilities into a home access point.
+This approach has various unique advantages: (i) our platform is able to observe
+all traffic to and from its clients;and,
+(ii) the home access point is a ``demarcation point'' between the home wireless network and
+the access link so that it is the best place to learn about wired and wireless network.
+ Although BISmark~\cite{183951} hasworked on deploying measurements through
+ gateways in homes, it has several security issues
+ that might cripple a user's Internet connection (e.g., malicious codes might
+ run out of router's resource). \sysname instead allows untrusted parties to run
+  any experiment codes on our platform via a programmable interface and
+  resource protection framework. A user can let a third party have access to
+  their network traffic data within a security and performance isolated
+  virtual machine. Users not only are able to control how much information they
+share with the rest of world, but also decide how many resources an application can use.
+ For example, an experiment can be terminated if it consumes too many resources
+  or accesses specific interfaces not allowed by a device's owner.
 
-\sysname is composed of three separate roles: home wireless router, \sysname provider and experimenter. Router owner donates computational resources to our platform, \sysname provider enables experimenter to pool and share resources, experimenter is seeking to run experiments on remote router.
+\sysname incorporates three separate roles: a home wireless router, the \sysname provider
+and an experimenter. The router owner donates computational resources to our platform,
+while the \sysname provider enables experimenters to pool and share resources.
+The experimenter seeks to run experiments on a remote router.
 
-Before conducting any network measurement experiments, device owner first downloads installer package from \sysname provider which is a testbed server that keep track of routers and allow researcher to access available routers. To run experiment code on owner's router, experimenter needs to download an experiment manager to his own laptop. Experimenter uses the experiment manager to access the remote router directly, upload experiment codes and start or stop the execution of the experiment. Figure~\ref{fig-arch} overviews the different components and their interactions of \sysname.
+Before conducting any network measurement experiments, a device owner first downloads
+ an installer package from the  \sysname provider. The latter is a testbed server
+ that keeps track of routers and allow researchers to access them when available.
+  To run experiment code on owner's router, the experimenter needs to download
+  an experiment manager to his own laptop. He or she uses the experiment manager
+   to access the remote router directly, to upload experiment codes, and to start
+    or stop the execution of the experiment. Figure~\ref{fig-arch} describes
+     the different components and their interactions with \sysname.
 
 \begin{figure}%[h]
 \centering
 \includegraphics[width=0.8\columnwidth]{figure/soar-arch.png}
-\caption{\sysname architecture and different components.}
+\caption{\sysname architecture and components.}
 \label{fig-arch}
 \end{figure}
 
 \section{Platform Architecture}
-The components in \sysname have three possible roles: the home wireless router (where an experiment runs), the platform provider (that distributes an installer with experimenter's credentials inside) and the experiment manager (where experiments are initiated).
+The components in \sysname have three possible roles: the home wireless router
+(where an experiment runs), the platform provider (that distributes an installer with experimenter's credentials inside) and the experiment manager (where experiments are initiated).
 
 \subsection{Home Wireless Router}
-Home wireless routers provide computing resources for experimenters to use in their network measurements. To isolate experiment code from home wireless router, experiment code executes in a \textbf{sandbox} environment. The default sandbox in \sysname is a \sandboxname, a subset of the Linux Kernel API constructed with the Restricted Python sandbox. When experimenters want to deploy their code on a remote router, they need a way to upload code into a sandbox and start it. The \textbf{node manager} listens for remote commands and mediates access to the sandboxes to ensure that only authorize experimenters can execute code in them. Finally, the \textbf{software updater} handles software updates. Once installed, any updates are pushed to nodes automatically instead of searching for new releases of the software manually.  
+Home wireless routers provide computing resources for experimenters to use in their
+ network measurements. To isolate experiment code from the router,
+ the code is executed in a \textbf{sandbox} environment. The default sandbox
+ in \sysname is a \sandboxname, a subset of the Linux Kernel API constructed with
+ the Restricted Python sandbox. When experimenters want to deploy their code on a
+  remote router, they need a way to upload code into a sandbox and start it
+  . The \textbf{node manager} listens for remote commands and mediates access to
+  the sandboxes to ensure that only authorized experimenters can execute code in them.
+   Finally, the \textbf{software updater} handles software updates. Once installed,
+   automatically pushes any updates to the nodes instead of searching for new releases
+    of the software manually.
 
 \subsection{Platform Provider}
-The platform provider helps experimenters to pool and share platform resources. An experimenter can distribute a \sysname installer with his credentials inside and share it with router owners. To join \sysname, a router owner first acquire a \sysname installer. The sandbox, nodemanager, software updater and a set of public keys are packaged into this installer by a \textbf{package builder}. After an installation, experimenter uses the public keys to register this node in a \textbf{lookup service} so that this node will be discovered by experimenters.
+The platform provider helps experimenters to pool and share platform resources.
+An experimenter can distribute a \sysname installer with his credentials inside
+and share it with router owners. To join \sysname, a router owner first acquires
+ a \sysname installer. The sandbox, nodemanager, software updater and a set of
+ public keys are packaged into this installer by a \textbf{package builder}.
+ After an installation, the experimenter uses the public keys to register this node
+  in a \textbf{lookup service} so that this node will be discovered by other
+  researchers.
 
 \subsection{Experiment Manager}
-Experimenters use their local machines to initiate and control experiments on a router running \sysname. The \textbf{experiment manager} allows experimenters deploy code into the sandbox and debug the result on router running \sysname. The experiment manager first looks up the set of routers running \sysname associated with an experimenter via the lookup service and then communicates with these nodes, executing commands on the behalf of the experimenter.  
+Experimenters use their local machines to initiate and control experiments
+ on a router running \sysname. The \textbf{experiment manager} allows experimenters
+ to deploy code into the sandbox and debug the result on a router running \sysname.
+ The experiment manager first uses the lookup services to find the set of routers
+  running \sysname that are associated with an experimenter. It then communicates
+   with these nodes, executing commands on the behalf of the experimenter.
 
 \section{API Design}
 {\raggedright
-\sysname is a network measurement platform designed to facilitate a broad range of experiments on home gateway while controlling the impact on hosts' resources and network connectivity. A key challenge is selecting a programming interface that is both flexible (i.e., supports a rich set of network measurements) and safe (i.e., does not disrupt a normal user's Internet connectivity). Previous work on sandboxed, programming measurement environments Repy could server as a useful environment for running network experiments. Considering our goal of supporting a wide range of network measurements on home wireless router, we opt for extending a few capabilities to Repy sandbox\cite{cappos2010retaining}. The Repy sandbox was used to isolate code for the Seattle testbed. The major goals of the sandbox are to provide security and performance isolation, and a portable programming interface across diverse device types. Currently this programming interface provides functions for networking, file system access, threading, locking, logging, and so on. These cover a broad range of network and file I/O capabilities. Repy is highly portable, and has been running in many network measurement projects, such as Content Distribution Network (CDN) Measurements~\cite{rafetseder2011exploring}, Video Streaming and Overlay Routing~\cite{eisl2011service}, Open3GMap~\cite{open3gmap} and so on. Tables \ref{table:new_api} and \ref{table:Repy} provide a summary of our proposed API calls and the current set of measurement capabilities Repy supported. 
+\sysname is a network measurement platform designed to facilitate a broad range
+of experiments on a home gateway while controlling the impact on hosts' resources
+ and network connectivity. A key challenge is selecting a programming interface
+ that is both flexible (i.e., supports a rich set of network measurements) and safe
+  (i.e., does not disrupt a normal user's Internet connectivity). Previous work
+  on sandboxed programming measurement environments, including the Seattle testbed<
+  suggested Repy could serve
+  as a useful environment for running network experiments. Considering our goal
+  of supporting a wide range of network measurements on a home wireless router,
+  we opt for extending a few capabilities of the Repy sandbox\cite{cappos2010retaining}.
+  The major goals of the sandbox are to provide security and performance isolation,
+  and a portable programming interface across diverse device types.
+  Currently this programming interface provides functions for networking, file
+   system access, threading, locking, logging, and so on. These cover a broad range
+    of network and file I/O capabilities. Repy is highly portable, and has been
+  used in many network measurement projects, including Content Distribution Network
+      (CDN) Measurements~\cite{rafetseder2011exploring}, Video Streaming and
+      Overlay Routing~\cite{eisl2011service}, Open3GMap~\cite{open3gmap} and
+      so on. Tables \ref{table:new_api} and \ref{table:Repy} provide a summary of
+       our proposed API calls and the current set of measurement capabilities Repy supports.
 
-Network measurement platforms in today's home networks should support both active and passive measurement. Active measurements require injecting test packets into the network. Traditionally, active measurement tools such as Ping\cite{ping} and Traceroute\cite{traceroute} were used to determine round-trip delays and network topologies. In comparison to the active measurement, the passive measurements do not inject test packets into the network. They need to capture packets and their corresponding timestamps transmitted by the platform. It can provide the information such as availability, utilization, packet errors and discards\cite{calyamactive}. We now briefly describe these capabilities corresponding to network measurements and detailed information about supported network measurements will be mentioned in \S{\ref{sec.network_measurement}}.
+Network measurement platforms in today's home networks should support both active
+ and passive measurement. Active measurements require injecting test packets into
+  the network. Traditionally, active measurement tools, such as Ping\cite{ping}
+  and Traceroute\cite{traceroute}, were used to determine round-trip delays and
+  network topologies. In comparison to active measurement, passive measurements
+  do not inject test packets into the network. They need to capture packets and
+  their corresponding timestamps transmitted by the platform. It can provide
+   information such as availability, utilization, packet errors and discards\cite{calyamactive}.
+    We now briefly describe these capabilities corresponding to network measurements.
+  Detailed information about supported network measurements will be
+described in \S{\ref{sec.network_measurement}}.
 
-\textbf{Basic Statistics.} \texttt{get\_network\_bytes}, \texttt{get\_network\_packets} and \texttt{get\_network\_interface} records aggregate network statistics for passively collected data. These methods read directly and parse data from \texttt{/proc/net/dev}. These are able to leverage the naturally-generated network traffic as passive measurements (particularly in the area of broadband characterization) by continuously monitoring the home gateway Internet connection.
+\textbf{Basic Statistics.} \texttt{get\_network\_bytes}, \texttt{get\_network\_packets}
+and \texttt{get\_network\_interface} record aggregate network statistics for
+passively collected data. These methods read directly and parse data
+from \texttt{/proc/net/dev}. These are able to leverage the naturally-generated
+network traffic as passive measurements (particularly in the area of broadband
+ characterization) by continuously monitoring the home gateway Internet connection.
 
-\textbf{Wireless Information.} \texttt{scan}, \texttt{get\_station} and \texttt{wifi\_status} provide a python interface to low-level system calls on system. The function sanitizes the call arguments, parsing complex output and return results to the caller. These methods use the \texttt{iw} command-line tool to trigger a new WiFi scan and to retrieve its results. \texttt{iw} is a new nl80211 based CLI configuration utility for wireless devices. It supports all new drivers that have been added to the kernel recently\cite{iw}. They enable experimenter to study dense WiFi networks and home networks characteristics.
+\textbf{Wireless Information.} \texttt{scan}, \texttt{get\_station} and \texttt{wifi\_status}
+ provide a Python interface to low-level system calls. The function sanitizes
+ the call arguments, parsing complex output and returning results to the caller.
+ These methods use the \texttt{iw} command-line tool to trigger a new WiFi scan
+  and to retrieve its results. \texttt{iw} is a new nl80211 based CLI configuration
+   utility for wireless devices. It supports all new drivers that have been added
+    to the kernel recently\cite{iw}. They enable experimenters to study dense WiFi
+    networks and home network characteristics.
 
-\textbf{Measurement Tool.} \texttt{ping} and \texttt{traceroute} serves as the basis for active measurements. These tools can be combined to build a wide range of measurements experiments. They also are able to contribute to local network debugging. Due to these are commonly used, it would be better to support on cross-platform. In order to let these measurement tools support on diverse operating systems, we use pure raw socket method to implement it. 
+\textbf{Measurement Tool.} \texttt{ping} and \texttt{traceroute} serve as the basis
+ for active measurements. These tools can be combined to build a wide range of
+ measurement experiments. They also are able to contribute to local network debugging.
+Because these are commonly used, they are better to support on cross-platform experiments.
+ \lois{I did not really understand what the previous sentence said. I edited as LogicallY
+ as possible but check to make sure I did not change your meaning.}
+  In order to let these measurement tools perform on diverse operating systems,
+  we use a pure raw socket method to implement it.
 
 
 \begin{table*}
@@ -87,7 +191,7 @@ Threading                                                                       
 \label{table:Repy}
 \end{table*}
 
-\begin{table*} 
+\begin{table*}
 \scriptsize
 \centering
 \begin{tabular}{|p{.1\textwidth}| p{.3\textwidth}| m{.3\textwidth}|}
@@ -106,38 +210,130 @@ client\'s signal strength at AP)\newline neighbor APs information \newline Chann
 
 \section{Supported Network Measurements.}
 \label{sec.network_measurement}
-We begin by presenting examples of measurement efforts that benefit from the platform location (at the hub of home networks) and supported capabilities. The list here is far from exhaustive; our design is general, and hence adaptable to a range of other experiments as well. Table~\ref{table:experiment} shows network measurements obtained from \sysname.
+We begin by presenting examples of measurement efforts that benefit from the platform
+ location (at the hub of a home network) and supported capabilities. The list
+ here is far from exhaustive; our design is general, and, hence, adaptable to a range
+  of other experiments as well. Table~\ref{table:experiment} shows network
+  measurements obtained from \sysname.
 
 \begin{itemize}
-\item \textbf{Wireless network performance:} Unlike prior wireless measurement studies that have deployed passive monitors\cite{mahajan2006analyzing}\cite{raghavendra2009wi}\cite{papagiannaki2006experimental}, in our work we take a different approach: We collect wireless performance metrics using these home wireless routers as vantage points. Currently, \sysname supports to gather a variety of wireless network metrics, such as signal strength, tx/rx bitrate, SSID, BSSID, channel number, channel busy time.  Unlike out-of-band wireless monitors, our wireless access points can exactly observe all traffic to and from its clients, correlate them with wireless performance, and hence conduct multiple types of measurements. In addition, home router sits between the access link and wireless network so that it is better to identify and isolation problems between these two locations.
+\item \textbf{Wireless network performance:} Unlike prior wireless measurement studies
+that have deployed passive
+monitors\cite{mahajan2006analyzing}\cite{raghavendra2009wi}\cite{papagiannaki2006experimental},
+in our work, we collect wireless performance metrics using these home wireless
+routers as vantage points. Currently, \sysname supports gathering a variety of
+ wireless network metrics, such as signal strength, tx/rx bitrate, SSID, BSSID,
+ channel number, channel busy time.  Unlike out-of-band wireless monitors, our wireless
+  access points can exactly observe all traffic to and from its clients,
+  correlate them with wireless performance, and hence conduct multiple types of measurements.
+  In addition, a home router sits between the access link and wireless network
+  so that it is better to identify and isolation problems between these two locations.
 
-\item \textbf{ISP performance:} The home wireless router is ideally suited for measuring access link characteristics without being affected by confounding factors from the rest of home network. A wide range of network I/O primitives we supported can perform active measurement from home routers to a server, including speed test, performance diagnostics and so on. For example, downloading small binary files through TCP connection from a web server to router to estimate the connection speed.
+\item \textbf{ISP performance:} The home wireless router is ideally suited for
+measuring access link characteristics without being affected by confounding factors from the rest of the
+home network. A wide range of the network I/O primitives we support can perform active measurements
+from home routers to a server, including speed tesst, performance diagnostics and so on. For example,
+it can download small binary files through a TCP connection from a web server to a router
+ to estimate the connection speed.
 
-\item \textbf{Large-scale topology mapping:} Many prior works from research community have tried to understand the Internet's topology and connectivity by conducting \texttt{traceroute-like} measurements from multiple vantage points\cite{paxson1996end}\cite{chen2009sidewalk}. A router-based platform that support \texttt{traceroute} functinality would help researchers to extend their study.
+\item \textbf{Large-scale topology mapping:} Many prior works from the research
+ community have tried to understand the Internet's topology and connectivity by
+  conducting \texttt{traceroute-like} measurements from multiple
+  vantage points\cite{paxson1996end}\cite{chen2009sidewalk}. A router-based platform that supports
+   \texttt{traceroute} functionality would help researchers extend their study.
 
-\item \textbf{Home network usage patterns:} Since our platform sits between the access link and the rest of the home network and acts as a continuous monitoring software, we can study home network usage pattern, such as the amount of traffic and the number of devices on the network at any given time. For instance, \texttt{get\_station} is able to gather information about the number of connected devices and \texttt{get\_network\_bytes} have the ability to know the amount of network traffic.    
-\end{itemize} 
+\item \textbf{Home network usage patterns:} Since our platform sits between the
+access link and the rest of the home network, and acts as a continuous monitoring
+software, we can study home network usage patterns, such as the amount of traffic
+ and the number of devices on the network at any given time. For instance, \texttt{get\_station}
+ is able to gather information about the number of connected devices and
+  \texttt{get\_network\_bytes} have the ability to know the amount of network traffic.
+\end{itemize}
 \par}
 \section{Security}
 \label{sec.security}
-With the rapid development of smart home, it becomes essential to focus on home network security and privacy. Since \sysname deploys on the home wireless router, any bugs may bring a significant impact to home networks. For instance, attackers may obtain the control authority of the home networks through a malicious attack. 
+With the rapid development of smart home technology, it becomes essential to
+focus on home network security and privacy. Since \sysname deploys on the home
+wireless router, any bugs can have a significant impact on a home network.
+For instance, attackers may obtain control of the home networks
+through a malicious attack.
 
-To understand how to prevent attacks, we first considered the different kinds of attacks. We observe that these attacks fall into three types: (i) Denial-service attack (e.g., Packet flooding, SYN flooding\cite{eddy2011syn}): overwhelm targets with a flood of network traffic to run out of end host resources or control/drain resources on routers, (ii) Injection attack (e.g., Remote exploits\cite{shellcode},  spoofing attack\cite{bishop1996attack}): create a few ``magic'' packets to implement spoof attack or exploit attack. (iii) Insider attack (e.g., Network eavesdropping): malicious insiders intentionally eavesdrop, steal, or damage information to violate user's privacy.
+To understand how to prevent attacks, we first considered the different kinds of
+attacks. We observe that they fall into three types: (i) Denial of service attack
+ (e.g., Packet flooding, SYN flooding\cite{eddy2011syn}): overwhelm targets with
+  a flood of network traffic to drain end host resources or control/drain resources
+   on routers, (ii) Injection attack (e.g., Remote exploits\cite{shellcode},
+   spoofing attack\cite{bishop1996attack}): create a few ``magic'' packets to
+   implement spoof attacks or exploit attacks. (iii) Insider attack (e.g.,
+   Network eavesdropping): malicious insiders intentionally eavesdrop, steal,
+   or damage information to violate user's privacy.
 
-To prevent these three types of attacks, \sysname uses a sandboxes environment named Repy for security isolation and performance isolation.
- 
-\begin{itemize} 
-\item \textbf{Security isolation:} The sandbox must be able to ensure the execution safety of experiment code while representing as little risk to host as possible. The Repy sandbox in \sysname uses language-based isolation and is implemented in Python. In addition, Repy uses security layer to push library functionality out of the sandbox kernel, thereby helping to mitigate the impact of bugs in libraries~\cite{cappos2010retaining}. As a result, experimenter can enforce a policy upon a Repy sandbox without needing to change the TCB (trusted computing base).  
-\item \textbf{Performance isolation:} Resource consumption is the biggest issue for a distributed system. Especially when we are in the home networks and need to share our platform with unidentified home wireless routers. The rate of resource consumption may degrade the performance of itself and others in real network when vulnerabilities comes into effect\cite{joshi2013survey}. Therefore, \sysname must control the load its experiments impose on the routers, as well as minimize the impact of real user's network connectivity. To achieve it, \sysname should limit consumption of host's resources, include the amount of CPU and memory used, network and disk I/O. To control CPU and memory utilization, \sysname monitors the amount of CPU and memory available to a experiment. To control network and disk I/O, \sysname checks calls that access these resources and prevents their execution if they exceed a predefined limits. 
+To prevent these three types of attacks, \sysname uses a sandboxed environment
+ named Repy for security isolation and performance isolation.
+
+\begin{itemize}
+\item \textbf{Security isolation:} The sandbox must be able to ensure the execution
+ safety of experiment code while presenting as little risk to the host as possible.
+The Repy sandbox in \sysname uses language-based isolation and is implemented in Python.
+In addition, Repy uses a security layer to push library functionality out of the
+sandbox kernel, thereby helping to mitigate the impact of bugs in libraries~\cite{cappos2010retaining}.
+As a result, an experimenter can enforce a policy upon a Repy sandbox without
+needing to change the TCB (trusted computing base).
+\item \textbf{Performance isolation:} Resource consumption is the biggest issue
+for a distributed system. In the home network, we need to share our platform with
+an unidentified home wireless routers. If vulnerabilities come into
+effect\cite{joshi2013survey}, the rate of resource consumption may degrade
+the performance itself, and the performance of other applications in real networks.
+ Therefore, \sysname must control the load its experiments impose on the routers,
+ as well as minimize the impact of real user's network connectivity. To achieve
+ this, \sysname should limit consumption of host's resources, including the amount
+  of CPU and memory used, network and disk I/O. T \sysname monitors the amount of
+   CPU and memory available to a experiment. To control network and disk I/O, \sysname
+   checks calls that access these resources and prevents their execution if they exceed a predefined limit.
 \end{itemize}
 
-Through performance isolation, the volume of experiment's network traffic and the available resource of experiments is restricted based on the quota router owner predefined. Therefore, denial-service attack is impossible because our platform does not allow to launch a sustained flood of traffic to other hosts. In addition, since sandbox control CPU, memory, bandwidth, disk I/O and other resources, \sysname is able to control the load of its experiments impose on a wireless router. Through security isolation, experimenter has the ability of setting up policy for library and returned data. For instance, if one wants to restrict access to a specified functionality's parameter or returned value, this can be added in a secure policy without changing Repy. To mitigate the second and third types of attacks, we could block few functionalities that may pose risks to home networks and anonymize sensitive information that will leverage users' privacy, the detail information will be discussed in \S{\ref{sec.privacy}}. 
+Through performance isolation, the volume of an experiment's network traffic
+and the available resources for experiments is restricted based on the quota the
+router owner predefines. Therefore, denial-service attacks are impossible because
+ our platform does not allow to launch a sustained flood of traffic to other hosts.
+ In addition, since the sandbox controls CPU, memory, bandwidth, disk I/O and other
+  resources, \sysname is able to control the load of its experiments imposed
+   on a wireless router. Through security isolation, the experimenter has the
+   ability of setting up policies for library and returned data.
+    For instance, if one wants to restrict access to a specified functionality's
+    parameter or returned value, this can be added in a secure policy without
+    changing Repy. To mitigate the second and third types of attacks,
+    we could block a few functionalities that may pose risks to home networks,
+    and anonymize sensitive information that might leverage users' privacy.
+  Detailed information is discussed in \S{\ref{sec.privacy}}.
 
 \section{Privacy}
 \label{sec.privacy}
-Although a rich set of capabilities enhance the convenience of user interfaces and application usefulness, they also raise serious privacy concerns. For example, network traffic volume over interface and the information of connected devices in home networks produce a rich history, it will lead to behaviour prediction, such information invades user privacy. 
+Although a rich set of capabilities enhance the convenience of user interfaces
+and application usefulness, they also raise serious privacy concerns. For example,
+ network traffic volume over an interface and the information from connected devices
+  in home networks produce a rich history that can lead to behavior prediction,
+which can invade user privacy.
 
-In order not to allow measurements to exfiltrate sensitive information from home gateway, \sysname provides a framework of reference monitor~\cite{ref}, to enforce mandatory access control to sensitive data in real time. Firgure~\ref{fig-reference} shows the overview of reference monitor. Different from modifying the sandbox, \sysname allows users to decide not only what information experimenters can capture on their routers, but also how much information they would share with others. \sysname allows router owner to add privacy filters they wish to apply. These may range from sharing home network devices information with experimenter by blocking MAC addresses or completely denying access to network traffic statistics. For a particular experiment, a privacy policy might based on the type of network measurement, the capabilities can be passed through, filtered, or dropped by the reference monitor. For example, an experimenter who wants to learn about Internet censorship, a filter might perform an action such as removing access point information from WiFi scans and network traffic volume information in home networks, only allow to access ping and traceroute functionality. These privacy filters are easily built and disseminated to router owners. Therefore, \sysname is able to handle the second and third types of attacks in \S{\ref{sec.security}}. 
+In order not to allow measurements to exfiltrate sensitive information from a home
+ gateway, \sysname provides a framework of reference monitors~\cite{ref}
+  to enforce mandatory access control to sensitive data in real time.
+  Figure~\ref{fig-reference} shows an overview of the reference monitor.
+  Instead of modifying the sandbox, \sysname allows users to decide not only what
+   information experimenters can capture on their routers, but also how much
+    information they can share with others. \sysname allows router owner to
+    add the privacy filters they wish to apply. These may range from sharing some home
+     network device information with an experimenter by just blocking MAC addresses, to
+     completely denying access to network traffic statistics. For a particular experiment,
+     a privacy policy might based on the type of network measurement, and
+     the capabilities can be passed through, filtered, or dropped by the reference monitor.
+      For an experimenter who wants to learn about Internet censorship,
+      a filter might perform an action such as removing access point information
+       from WiFi scans and network traffic volume information in home networks,
+       only allowing access to ping and traceroute functionality.
+       These privacy filters are easily built and disseminated to router owners.
+        Therefore, \sysname is able to handle the second and third types of attacks
+        in \S{\ref{sec.security}}.
 
 \begin{figure}%[h]
 \centering
@@ -145,4 +341,3 @@ In order not to allow measurements to exfiltrate sensitive information from home
 \caption{Overview of reference monitor. The original Repy interface and the added API together provide the OS level sandbox kernel on a home wireless router. Before an experiment can access data, different policies can be combined together as a set of filters to protect users' privacy.}
 \label{fig-reference}
 \end{figure}
-
