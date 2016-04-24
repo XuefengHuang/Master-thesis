@@ -6,6 +6,7 @@
 \usepackage{subcaption}
 \usepackage{pdfpages}
 \usepackage{booktabs}
+\usepackage{listings}
 \usepackage{latexsym}
 \usepackage{array}
 \usepackage{amsmath}					
@@ -19,13 +20,18 @@
 
 \begin{document}
 \includepdf[pages={1-2}]{./cover/titlepage.pdf}
+\pagenumbering{roman}
+\input{vita.tex}
+\input{acknowledgments.tex}
+\includepdf[pages={1-2}]{./cover/ABSTRACT.pdf}
 \tableofcontents
 \listoffigures
 \listoftables
-\input{abstract.tex}
-
+%\input{abstract.tex}
+\clearpage
 %\section{}
 %\subsection{}
+\pagenumbering{arabic}
 \input{intro.tex}
 \input{related_work.tex}
 \input{goal.tex}
