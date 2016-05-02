@@ -1,7 +1,8 @@
 \chapter{IMPLEMENTATION} 
 \label{sec.implementation}
-Based on the design introduced in \S{\ref{sec.design}}, we implement \sysname, a secure network testbed. We describe the implementation details of our system 
-in this section. It is important to acknowledge that the \sysname benefits from the design and implementation experience of Seattle Testbed~\cite{cappos2009seattle}, an open experimental platform for researchers and educators to understand the real world network. Over the past six years, the Seattle Testbed has been used in a variety of different experiments across the world. A core design principle of this testbed is the implementation of Repy sandbox on user devices. The function of the sandbox has several goals. First of all, it must be able to run experimental code while posing as little risk as possible to the privacy and security of the device owner. Keeping programs within Repy ensures user's sensitive information on the host is kept safe and private. In addition, sandbox must provide performance isolation for experiment code to prevent it from consuming too much CPU, memory, disk I/O and network bandwidth. The basic design of the Repy for OpenWrt described below was leveraged from the Seattle design.
+Based on the design introduced in \S{\ref{sec.design}}, we implement \sysname, a secure network testbed for home wireless routers. It is important to acknowledge that the \sysname benefits from the design and implementation experience of Seattle Testbed~\cite{cappos2009seattle}, an open experimental platform for networking and distributed systems research. Over the past six years, the Seattle Testbed has been used in a variety of different experiments across the world. 
+
+In this section, we discuss some implementation details for our design that might be useful for others trying to adopt parts of the components.
 
 \section{Core Components}
 \subsection{Sandbox}
@@ -25,7 +26,7 @@ Node manager~\cite{nodemanager} ensures that sandboxes are correctly assigned to
 
 \subsection{Software Updater}
 \label{sec.softwareupdater}
-Software updater allows \sysname-enabled router to search for and update new release automatically. It runs in the background to check with the package builder if there exists a new update per some random amount of time (30min - 1hour). It then downloads the new installer from package builder and replaces the old installer. Since the resources are limited, we opt for downloading to \texttt{/tmp} (usually 64MB or 128MB) directory to avoid messing home wireless router up.   
+Software updater allows \sysname-enabled router to search for and update new release automatically. It runs in the background to check with the package builder if there exists a new update per some random amount of time (30min - 1hour). It then downloads the new installer from package builder and replaces the old installer. Since the resources are limited, we opt for downloading update package to \texttt{/tmp} (usually 64MB or 128MB) directory to avoid messing home wireless router up.   
 
 \subsection{Lookup Service}
 \label{sec.lookupservice}

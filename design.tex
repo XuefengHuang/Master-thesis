@@ -95,7 +95,7 @@ Threading                                                                       
 \textbf{Type} & \textbf{Parameters} & \textbf{Descriptions} \\
  \hline
  {\bf Passive} & {\bf Aggregate traffic statistics per associated client (e.g., Total packets sent, received, retried,
-client\'s signal strength at AP)\newline neighbor APs information \newline Channel utilization} & {\bf Home network usage patterns\newline Wireless network performance} \\
+client\'s signal strength at AP)\newline nearby APs information \newline Channel utilization} & {\bf Home network usage patterns\newline Wireless network performance} \\
 \hline
  {\bf Active} & {\bf Throughput, Latency, Loss, Jitter \newline traceroute \newline DNS lookups} & {\bf ISP performance \newline Large-scale topology mapping} \\
 \hline
@@ -113,7 +113,7 @@ We begin by presenting examples of measurement efforts that benefit from the pla
 
 \item \textbf{ISP performance:} The home wireless router is ideally suited for measuring access link characteristics without being affected by confounding factors from the rest of the home network. A wide range of network I/O primitives we support can perform active measurement from home routers to a server, including speed test, performance diagnostics and so on. For example, it can download small binary files through a TCP connection from a web server to a router to estimate the connection speed.
 
-\item \textbf{Large-scale topology mapping:} Many prior works from the research community have tried to understand the Internet's topology and connectivity by conducting \texttt{traceroute-like} measurements from multiple vantage points~\cite{paxson1996end,chen2009sidewalk}. A router-based platform that supports \texttt{traceroute} functinality would help researchers to extend their study.
+\item \textbf{Large-scale topology mapping:} Many prior works from the research community have tried to understand the Internet's topology and connectivity by conducting \texttt{traceroute-like} measurements from multiple vantage points~\cite{paxson1996end,chen2009sidewalk}. A router-based platform that supports \texttt{traceroute} functionality would help researchers to extend their study.
 
 \item \textbf{Home network usage patterns:} Since our platform sits between the access link and the rest of the home network, and acts as a continuous monitoring software, we can study home network usage patterns, such as the amount of traffic and the number of devices on the network at any given time. For instance, \texttt{get\_station} is able to gather information about the number of connected devices and \texttt{get\_network\_bytes} has the ability to know the amount of network traffic.    
 \end{itemize} 
