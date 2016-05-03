@@ -1,0 +1,13 @@
+def reduced_scan():
+  wifi_list = scan()
+  reduced_wifi_list = []
+  for wifi in wifi_list:
+    # Truncate AP MAC to the manufacturer ID
+    wifi["BBSID"] = wifi["BSSID"][0:8] + 3*":00"
+    reduced_wifi_list.append(wifi)
+
+  return reduced_wifi_list
+
+# Substitue scan with reduced_scan. 
+CHILD_CONTEXT_DEF["sendmessage"] = {
+   "target":reduced_scan,}

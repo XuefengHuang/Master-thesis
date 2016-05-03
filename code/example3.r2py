@@ -1,0 +1,11 @@
+def get_network_bytes(interface):
+
+  if type(interface) is not str:
+    raise RepyArgumentError("get_network_bytes() takes a string as a argument.")
+
+    # Check that the interface is available.
+    if interface not in get_network_interface():
+      raise RepyArgumentError("interface " + interface + " is not available.")
+
+    # Account for the fileread consumption.
+    nanny.tattle_quantity('procfsread', 4096)

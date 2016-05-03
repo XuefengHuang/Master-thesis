@@ -1,0 +1,19 @@
+# Set of allowed IP's, specified in order of preference
+ALLOWED_IPS = ["192.168.0.136", "127.0.0.1"]
+
+def filtered_sendmessage(destip, destport, message, localip, localport):
+'''
+This function restrict sending TCP packets to destination when the ip address is not allowed.
+'''
+  # Check the mode
+  if destip in ALLOWED_IPS:
+    return sendmessage(destip, destport, message, localip, localport)
+  raise AddressBindingError("Invalid destination IP specified! sendmessage() is restricted!")
+
+# Substitue sendmessage with filtered_sendmessage.
+CHILD_CONTEXT_DEF["sendmessage"] = {
+   "target":filtered_sendmessage,}
+
+
+
+

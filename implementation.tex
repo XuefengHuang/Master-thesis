@@ -11,9 +11,9 @@ The core sandbox - \sandboxname, which builds on Repy (Restricted Python), a Pyt
 
 Another important feature of \sandboxname is it allows us to define a policy for its programming interface. For example, the sandbox can anonymize the MAC address of available access points and blacklist home user's LAN. The policy enforcement is presented in \S{\ref{sec.policy}}. We focus on the security and performance isolation of \sandboxname in this section.
 \begin{itemize}
-\item \textbf{Performance isolation: }Each router running \sysname uses an uniform resource control method to allocate a fixed percentage (usually 50\%) of the router's CPU, memory, bandwidth, disk and other resources to one or more sandboxes. To achieve this, Repy uses operating system hooks to monitor the amount of CPU and memory available to an experiment. To restrict other resources such as network bandwidth and disk I/O, Repy checks those calls that access these resources, and preventing or delaying the execution of these calls if they exceed configured quota. When a router running \sysname boots, it reads a text file that lists the resources allocated to the experiment. Each line contains a resource type and quantity. For example, \texttt{resource diskused 100000000} means that 100 million bytes disk memory can be used at most. Due to this isolation, sandbox does not allow an experiment to consume a lot of resources and ensure experiment not affect Internet connectivity.
+\item \textbf{Performance isolation: }Each router running \sysname uses an uniform resource control method to allocate a fixed percentage (usually 50\%) of the router's CPU, memory, bandwidth, disk and other resources to one or more sandboxes. Since the diversity of home wireless routers,  a fixed percentage would be more flexible than invariable quota. To achieve this, Repy uses operating system hooks to monitor the amount of CPU and memory available to an experiment. To restrict other resources such as network bandwidth and disk I/O, Repy checks those calls that access these resources, and preventing or delaying the execution of these calls if they exceed configured quota. When a router running \sysname boots, it reads a text file that lists the resources allocated to the experiment. Each line contains a resource type and quantity. For example, \texttt{resource diskused 100000000} means that 100 million bytes disk memory can be used at most. Due to this isolation, sandbox does not allow an experiment to consume a lot of resources and ensure experiment not affect Internet connectivity.
 
-\item \textbf{Security isolation: }Repy sandbox has a small, self-contained kernel as its trusted computing base (TCB). In order to minimize the risk of bugs, the TCB is small (only include classic Python classes) so that it is less likely to have security risks than other complex kernels. This sandbox also uses \textit{security layers} to push library functionality out of the sandbox kernel, therefore it is helpful to mitigate security risks in libraries. 
+\item \textbf{Security isolation: }The Repy sandbox has a small, self-contained kernel as its trusted computing base (TCB). In order to minimize the risk of bugs, the TCB is small (only include classic Python classes) so that it is less likely to have security risks than other complex kernels. This sandbox also uses \textit{security layers} to push library functionality out of the sandbox kernel, therefore it is helpful to mitigate security risks in libraries. 
 
 \end{itemize}
 \subsection{Package Builder}
@@ -26,11 +26,11 @@ Node manager~\cite{nodemanager} ensures that sandboxes are correctly assigned to
 
 \subsection{Software Updater}
 \label{sec.softwareupdater}
-Software updater allows \sysname-enabled router to search for and update new release automatically. It runs in the background to check with the package builder if there exists a new update per some random amount of time (30min - 1hour). It then downloads the new installer from package builder and replaces the old installer. Since the resources are limited, we opt for downloading update package to \texttt{/tmp} (usually 64MB or 128MB) directory to avoid messing home wireless router up.   
+Software updater allows \sysname-enabled router to search for and update new release automatically. It runs in the background to check with the package builder if there exists a new update per some random amount of time (30min - 1hour). It then downloads the new installer from package builder and replaces the old installer. Since the resources are limited, software updater only is able to work on powerful routers (usually flash memory is more than 10MB).  
 
 \subsection{Lookup Service}
 \label{sec.lookupservice}
-A lookup service allows an experimenter to locate corresponding sandboxes. We currently use centralized advertise servers as a distributed way to store data. This central lookup service, which is a centralized hash table abstraction, is used to decrease lookup redundancy when OpenDHT fails.
+A lookup service allows an experimenter to locate corresponding sandboxes. It allows any party to either advertise a value under a certain key, or to look up a key to find out the associated values. We currently use centralized advertise servers as a distributed way to store data. This central lookup service, which is a centralized hash table abstraction, is used to decrease lookup redundancy when OpenDHT~\cite{rhea2005opendht} fails. Seattle testbed currently has three implementations of the central look up service and practical experience proves that it works well. Therefore, we adopt it as our lookup service.
 
 \subsection{Experiment Manager}
 \label{sec.seash}
@@ -42,14 +42,9 @@ Extensions enhance the functionality of the Repy sandbox and allow a wide range 
 
 \textbf{Protecting command injection.} Command injection is an attack in which arbitrary commands are executed on the host operating system by a vulnerable application. A possible reason of a command injection attack is insufficient input validation. \sysname sanitizes the call arguments, handles onerous output parsing, and returns results to the caller. One example is \texttt{scan} implementation. This function will run a system command \texttt{iw dev interface\_name station dump}. Normally, the output is station statistic information. However, if we add a semicolon and another to the end of this line, the command is executed as well, such as \texttt{;ls} could show all files in current directory. We will check whether an interface name is legal, as any illegal arguments will pose a security risk. \sysname API never allows invocation of arbitrary system calls.
 
-\begin{figure}%[h]
-\centering
-\includegraphics[width=0.8\columnwidth]{figure/nanny.png}
-\caption{Additional codes in \sysname sandbox's \texttt{get\_network\_bytes()} call to make sure resource control and command injection protection.}
-\label{fig-nanny}
-\end{figure}
+\lstinputlisting[language=Python,caption = {Additional codes in \sysname sandbox's \texttt{get\_network\_bytes()} call to make sure resource control and command injection protection.},label = fig-nanny]{code/example3.r2py}
 
-\textbf{Resource control.} Resource control is an important security mechanism. It provides protection from accidental or deliberate over-usage of resources by APIs that could affect the service level of the end host. Each new function in \sandboxname defines a resource type to record the amount of resource consumed. The specific function made depends on the type of resource being consumed. Figure \ref{fig-nanny} shows some of codes in \texttt{get\_network\_bytes()}. First of all, we check whether the argument is legal and available. The \texttt{tattle\_quantity()} call charges for the consumed fileread. When a \sysname starts, it reads a text file that lists the resources allocated to the platform. Each line contains a resource type and quantity. For example, \texttt{resource procfsread 100000} sets the allowed consumption of reading \texttt{/proc} filesystem to 100 thousand bytes. When experiment codes try to exceed the limit, it will be forcefully stopped.
+\textbf{Resource control.} Resource control is an important security mechanism. It provides protection from accidental or deliberate over-usage of resources by APIs that could affect the service level of the end host. Each new function in \sandboxname defines a resource type to record the amount of resource consumed. The specific function made depends on the type of resource being consumed. Listing \ref{fig-nanny} shows some of codes in \texttt{get\_network\_bytes()}. First of all, we check whether the argument is legal and available. The \texttt{tattle\_quantity()} call charges for the consumed fileread. When a \sysname starts, it reads a text file that lists the resources allocated to the platform. Each line contains a resource type and quantity. For example, \texttt{resource procfsread 100000} sets the allowed consumption of reading \texttt{/proc} filesystem to 100 thousand bytes. When experiment codes try to exceed the limit, it will be forcefully stopped.
 
 \section{Sandbox Policies}
 \label{sec.policy}
@@ -58,25 +53,15 @@ In order for a router owner to participate safely in \sysname, he should have th
 \subsection{Reducing Data Precision}
 Our sandbox may provides potentially inappropriate functions, such as network traffic capture that discloses the home network behavior pattern of the router owner. These kinds of policies are able to change the behavior of a function by disabling the returned value, or the precision of the specified value returned. For instance, a security layer could truncate an access point MAC address to the manufacturer ID.
 
-\begin{figure}%[h]
-\centering
-\includegraphics[width=0.8\columnwidth]{figure/example.png}
-\caption{Using security layer to define a simple sandbox policy: truncate access point MAC address to the manufacturer ID.}
-\label{fig-examplecode1}
-\end{figure}
+\lstinputlisting[language=Python,caption = {Using security layer to define a simple sandbox policy: truncate access point MAC address to the manufacturer ID.},label = fig-examplecode1]{code/example1.r2py}
 
-As shown in Figure~\ref{fig-examplecode1}, whenever experiment code calls \texttt{scan()}, the security layer above replaces it with \texttt{reduced\_scan()}. Therefore, security layer is able to ensure the router owner's policy.
+As shown in Listing~\ref{fig-examplecode1}, whenever experiment code calls \texttt{scan()}, the security layer above replaces it with \texttt{reduced\_scan()}. Therefore, security layer is able to ensure the router owner's policy.
 
 \subsection{Restricting Capability Access}
 This kind of policy is able to allow experimenters to restrict the code on a home wireless router. For example, the experimenter might want to restrict part of functionalities to satisfy router owner's need. It is also useful to save time in vetting experiment code because most harmful capabilities are restricted. As a result, \sysname is able to maintain containment of experiment code despite bugs in its libraries.
 
-\begin{figure}%[h]
-\centering
-\includegraphics[width=0.8\columnwidth]{figure/example-restrict_data.png}
-\caption{Using security layer to define a simple sandbox policy: Restrict \texttt{sendmessage} function when the destination is not allowed IP address.}
-\label{fig-examplecode2}
-\end{figure}
+\lstinputlisting[language=Python,caption = {Using security layer to define a simple sandbox policy: Restrict \texttt{sendmessage} function when the destination is not allowed IP address.},label = fig-examplecode2]{code/example2.r2py}
 
-As shown in Figure~\ref{fig-examplecode2}, whenever experiment code calls \texttt{sendmessage}, the security layer above replaces it with \texttt{filtered\_sendmessage}. In that way, hackers would not have the ability of writing a program which exploits TCP vulnerabilities to connect and gain immediate privileged access to Wi-Fi enabled devices in home networks. 
+As shown in Listing~\ref{fig-examplecode2}, whenever experiment code calls \texttt{sendmessage}, the security layer above replaces it with \texttt{filtered\_sendmessage}. In that way, hackers would not have the ability of writing a program which exploits TCP vulnerabilities to connect and gain immediate privileged access to Wi-Fi enabled devices in home networks. 
 
  

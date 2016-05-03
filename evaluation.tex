@@ -30,7 +30,7 @@ Our metrics are based on supported APIs provided by \sysname. We use channel bus
 \section{Usecase: Comparing the wireless performance of 2.4 GHz and 5 GHz bands}
 \label{sec.usecase1}
 
-Better use of 5 GHz to improve wireless performance on a dense WiFi network is a common strategy because there are generally fewer devices in the 5 GHz band (This means that the noise floor is much lower), and it has less non-WiFi interference. Thus our hypothesis was that devices on the 5 GHz band would perform better.
+Better use of 5 GHz to improve wireless performance on a dense WiFi network is a common strategy because there are generally fewer devices in the 5 GHz band (and thus the noise floor is much lower), and it has less non-WiFi interference. Thus our hypothesis was that devices on the 5 GHz band would perform better.
 
 We use \sysname to evaluate the wireless performance of network traffic on both 2.4 GHz and 5 GHz bands. Our focus is not on improving performance, but rather to underscore how we can use \sysname to gain useful insights into a real network.
 
@@ -64,13 +64,13 @@ For this experiment, the router that we use enables both 2.4 GHz and 5 GHz radio
 \label{fig:5gvs2g}
 \end{figure}
 
-\textbf{2.4 GHz vs. 5 GHz:} To investigate the performance of 5 GHz and 2.4 GHz band, we use throughput, channel utilization, retransmission times and external interference as our indicator of wireless performance because we can obtain these metrics easily from our supported APIs. We calculate throughput as follows: using \texttt{get\_network\_bytes} to provide TCP statistics. We study the aggregate TCP throughput achieved during the captured lifetime of the network traffic. We compute the average throughput at every one-second interval by the dividing aggregate TCP throughput and the difference between the correspond timestamp. \texttt{get\_station} can help us obtain the number of retry packets at each clients. We also compute channel utilization and external interference as the percentage of channel busy time and external interference time in any given one-second interval. 
+\textbf{2.4 GHz vs. 5 GHz:} To investigate the performance of 5 GHz and 2.4 GHz band, we use throughput, channel utilization, retransmission times and external interference as our indicator of wireless performance because we can obtain these metrics easily from our supported APIs. We calculate throughput as follows: using \texttt{get\_network\_bytes} to provide TCP statistics. We study the aggregate TCP throughput achieved during the captured lifetime of the network traffic. We compute the average throughput at every one-second interval by dividing aggregate TCP throughput and the difference between the correspond timestamp. \texttt{get\_station} can help us obtain the number of retry packets at each clients. We also compute channel utilization and external interference as the percentage of channel busy time and external interference time in any given one-second interval. 
 
 We see that the use of 5 GHz improves performance, reducing channel utilization, external interference and retransmission rate. Figure \ref{fig:throughput} plots CDF of the throughput for all network traffic in wireless network, for both the 2.4 GHz band and the 5 GHz band. Only 20\% of 2.4 GHz network traffic see throughput above 0.4 Mbps; in contrast, more than 25\% of network traffic in the 5 GHz spectrum see throughput greater than 0.45 Mbps. Figure \ref{fig:utilization} shows the channel utilization for all network traffic in wireless network; the result shows that channel utilization in 2.4 GHz are much higher than 5 GHz, with about 95\% of network traffic having channel utilization above 20\%. Figure \ref{fig:retries} shows the retransmission times per second; the result shows that retransmissions are more common in the 2.4 GHz band, likely because the 5 GHz band is less crowded. Figure \ref{fig:interference} plots the CDF of the external interference for all network traffic for both the 2.4 GHz band and the 5 GHz bands. The 5 GHz band has less interference as it provides 23 non-overlapping channels. A limiting factor to identify the real wireless performance is the lack of contention and feedback from external sources (i.e., local contention and non-WiFi wireless devices). However, we still leverage channel busy time to detect channel utilization and external interference.
 
 \begin{figure}
 \centering
-\includegraphics[width=0.5\textwidth]{figure/tcp_rtt.png}
+\includegraphics[width=0.8\textwidth]{figure/tcp_rtt.png}
 \caption{LAN TCP round-trip time for different bands (e.g., 2 GHz, 5 GHz).} 
 \label{fig:tcprtt}
 \end{figure}
@@ -79,7 +79,7 @@ We see that the use of 5 GHz improves performance, reducing channel utilization,
 
 \begin{figure}
 \centering
-\includegraphics[width=0.5\textwidth]{figure/bitrate(weekday_vs_weekend).png}
+\includegraphics[width=0.8\textwidth]{figure/bitrate(weekday_vs_weekend).png}
 \caption{Bitrate on weekday and weekend in an office building on the NYU Brooklyn campus. Weekend bitrate is more than weekday bitrate.} 
 \label{fig:compare}
 \end{figure}  
@@ -89,7 +89,7 @@ We see that the use of 5 GHz improves performance, reducing channel utilization,
 
 \begin{figure}
 \centering
-\includegraphics[width=0.5\textwidth]{figure/channel.png}
+\includegraphics[width=0.8\textwidth]{figure/channel.png}
 \caption{Channel survey metrics in 2.4 GHz band through \texttt{wifi\_status}.} 
 \label{fig:channelsurvey}
 \end{figure}
@@ -120,13 +120,13 @@ Signal Strength & 0.0163 \\
 \section{Usecase: Studying home wireless environment}
 \label{sec.usecase3}
 
-\textbf{Within a home network, individual devices experience different wireless performance at different time.} Figure \ref{fig:compare} uses the WiFi data set to show throughput of the wireless network during a period of time of a day, partitioned into weekday and weekend. We observe a diurnal throughput on a home network in a office building at a period of time of a day on weekdays and weekends. We see that throughput is higher on weekend than on weekday, which may result from there are less external interference (e.g., surrounding access points, clients).
+\textbf{Within a home network, individual devices experience different wireless performance at different time.} Figure \ref{fig:compare} uses the WiFi data set to show throughput of the wireless network during a period of time of a day, partitioned into weekday and weekend. We observe a diurnal throughput on a home network in a office building at a period of time of a day on weekdays and weekends. We see that throughput is higher on the weekend than on weekday, which may result from less external interference (e.g., surrounding access points, clients).
 
 \textbf{Home WiFi neighbourhood.} We next leverage the feedback from our platform, which is located in an office building, to analyse its WiFi neighbourhoods. Overall, we observe the number of neighbouring SSIDs around our wireless router varies between 26 and 64. The average number is around 46.45. We also observe network density at night (between 0:00 am and 6:00 am), and the average number is around 48.83. Therefore, the network density does not vary a lot between day and night (This possibly could due to employees work late or to lack of automation to manage these wireless routers).
 
 \begin{figure}
 \centering
-\includegraphics[width=0.8\textwidth]{figure/2GHz_WiFi_channels.png}
+\includegraphics[width=0.9\textwidth]{figure/2GHz_WiFi_channels.png}
 \caption{Three channels that do not overlap in the on 2.4 GHz : 1, 6 and 11\cite{wlanchannels}.} 
 \label{fig:channels}
 \end{figure}
