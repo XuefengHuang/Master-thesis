@@ -1,0 +1,42 @@
+time = dy_import_module("time.r2py")
+random = dy_import_module("random.r2py")
+
+def passive_monitor():
+  timeport = list(getresources()[0]["connport"])[0]
+  time.time_updatetime(timeport)
+  myfileobject = openfile("result.txt", True)
+
+  while True:
+    myfilecontent = myfileobject.readat(None, 0)
+    offset = len(myfilecontent)
+    t = time.time_getunixtime()
+    result1 = get_network_bytes('wlan0')
+    result2 = wifi_status('wlan0')[1]
+    result3 = get_station('wlan0')[0]
+    content = str(t) + ' ' + str(result1['trans']) + ' ' + str(result2['busy_time']) + ' ' + str(result2['transmit_time']) + ' ' + str(result2['receive_time']) + ' ' + str(result3['tx retries']) + ' ' + str(result3['signal_avg'])
+
+    try:
+      myfileobject.writeat(content + "\n", offset)
+    except IOError:
+      pass
+    sleep(1)
+  myfileobject.close()
+
+
+def sendpacket():
+  data = "a"*50000
+  port = 63101
+  socketobject = openconnection('192.168.1.143', 55556, "192.168.1.1", port, 5)
+  t_start = getruntime()
+  while True:
+    if (getruntime() - t_start <30):
+      try:
+        socketobject.send(data)
+      except SocketWouldBlockError:
+        sleep(0.005)
+    else:
+      sleep(30)
+      t_start = getruntime()
+
+createthread(passive_monitor)
+createthread(sendpacket)

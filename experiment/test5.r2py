@@ -1,0 +1,79 @@
+def tcping5g():
+  host = "192.168.1.136"
+  dest_port = 55556
+  source = "192.168.1.1"
+  source_port = 63100
+  time = 1000
+  timeout = 5
+  rtts = []
+  try:
+    socketobject = openconnection(host, dest_port, source, source_port, timeout)
+  except CleanupInProgressError:
+    log("CleanupInProgressError")
+
+  myfileobject = openfile("rtt_5g.txt", True)
+  i = 0
+  while(i < 1000):
+    try:
+      myfilecontent = myfileobject.readat(None, 0)
+      offset = len(myfilecontent)
+      start = getruntime()
+      socketobject.send("abc")
+      data = socketobject.recv(1024)
+      if not data:
+        failed = failed + 1
+      else:  
+        now = getruntime()
+        rtt = now-start
+        try:
+          myfileobject.writeat(str(rtt) + "\n", offset)
+        except IOError:
+          pass
+      i = i + 1
+      sleep(0.5)
+    except SocketWouldBlockError:
+      sleep(0.005)
+  myfileobject.close()
+  log(failed)
+
+def tcping2g():
+  host = "192.168.1.143"
+  dest_port = 55556
+  source = "192.168.1.1"
+  source_port = 63100
+  time = 1000
+  timeout = 5
+  rtts = []
+  try:
+    socketobject = openconnection(host, dest_port, source, source_port, timeout)
+  except CleanupInProgressError:
+    log("CleanupInProgressError")
+
+  myfileobject = openfile("rtt_2g.txt", True)
+  i = 0
+  failed = 0
+  while(i < 1000):
+    try:
+      myfilecontent = myfileobject.readat(None, 0)
+      offset = len(myfilecontent)
+      start = getruntime()
+      socketobject.send("abc")
+      data = socketobject.recv(1024)
+      if not data:
+        failed = failed + 1
+      else:  
+        now = getruntime()
+        rtt = now-start
+        try:
+          myfileobject.writeat(str(rtt) + "\n", offset)
+        except IOError:
+          pass
+      i = i + 1
+      sleep(0.5)
+    except SocketWouldBlockError:
+      sleep(0.005)
+  myfileobject.close()
+  log(failed)
+
+createthread(tcping2g)
+createthread(tcping5g)

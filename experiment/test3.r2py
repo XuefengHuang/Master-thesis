@@ -1,0 +1,15 @@
+time = dy_import_module("time.r2py")
+timeport = list(getresources()[0]["connport"])[0]
+time.time_updatetime(timeport)
+content = ""
+while True:
+	myfileobject = openfile("channel.txt", True)
+	myfilecontent = myfileobject.readat(None, 0)
+	offset = len(myfilecontent)	
+	t = time.time_getunixtime()
+	result = scan('wlan0')
+	for i in result:
+  		content += str(t) + ' ' + i['BSSID'] + ' ' + i['channel'] +  '\n'
+	myfileobject.writeat(content + "\n", offset)
+	myfileobject.close()
+	sleep(300)

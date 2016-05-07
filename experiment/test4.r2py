@@ -1,0 +1,57 @@
+time = dy_import_module("time.r2py")
+random = dy_import_module("random.r2py")
+
+def passive_monitor():
+  timeport = list(getresources()[0]["connport"])[0]
+  time.time_updatetime(timeport)
+  myfileobject = openfile("result1.txt", True)
+
+  while True:
+    myfilecontent = myfileobject.readat(None, 0)
+    offset = len(myfilecontent) 
+    t = time.time_getunixtime()
+    content = str(t) + ' ' + str(get_network_bytes('wlan1')['trans']) + ' ' +str(get_network_bytes('wlan1')['recv']) + ' ' + str(get_network_bytes('wlan1')['rx_error']) + ' ' + str(get_network_bytes('wlan1')['tx_error']) + ' ' + str(get_network_bytes('wlan1')['rx_drop']) + ' ' + str(get_network_bytes('wlan1')['tx_drop']) + ' ' + str(get_network_bytes('wlan0')['trans']) + ' ' +str(get_network_bytes('wlan0')['recv']) + ' ' + str(get_network_bytes('wlan0')['rx_error']) + ' ' + str(get_network_bytes('wlan0')['tx_error']) + ' ' + str(get_network_bytes('wlan0')['rx_drop']) + ' ' + str(get_network_bytes('wlan0')['tx_drop'])
+    for i in wifi_status('wlan1'):
+      content += ' ' + i['frequency'] + ' ' + i['busy_time'] + ' ' + i['active_time'] + ' ' + i['transmit_time'] + ' ' + i['receive_time']
+    for i in wifi_status('wlan0'):
+      content += ' ' + i['frequency'] + ' ' + i['busy_time'] + ' ' + i['active_time'] + ' ' + i['transmit_time'] + ' ' + i['receive_time']
+    try:
+      myfileobject.writeat(content + "\n", offset)
+    except IOError:
+      pass
+    sleep(1)
+  myfileobject.close()
+
+def sendpacket1():
+  data = "a"*50000
+  port = 63100
+  socketobject = openconnection('192.168.1.136', 55557, "192.168.1.1", port, 5)
+  t_start = getruntime()
+  while True:
+    if (getruntime() - t_start <30):
+      try:
+        socketobject.send(data)
+      except SocketWouldBlockError:
+        sleep(0.005)
+    else:
+      sleep(10)
+      t_start = getruntime()
+
+def sendpacket2():
+  data = "a"*50000
+  port = 63101
+  socketobject = openconnection('192.168.1.143', 55557, "192.168.1.1", port, 5)
+  t_start = getruntime()
+  while True:
+    if (getruntime() - t_start <30):
+      try:
+        socketobject.send(data)
+      except SocketWouldBlockError:
+        sleep(0.005)
+    else:
+      sleep(10)
+      t_start = getruntime()
+
+createthread(passive_monitor)
+createthread(sendpacket1)
+createthread(sendpacket2)

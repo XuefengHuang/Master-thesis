@@ -1,0 +1,68 @@
+time = dy_import_module("time.r2py")
+random = dy_import_module("random.r2py")
+
+def passive_monitor():
+  timeport = list(getresources()[0]["connport"])[0]
+  time.time_updatetime(timeport)
+  myfileobject5g = openfile("result5g.txt", True)
+  myfileobject2g = openfile("result2g.txt", True)
+
+  while True:
+    myfilecontent_5g = myfileobject5g.readat(None, 0)
+    myfilecontent_2g = myfileobject2g.readat(None, 0)
+    offset_5g = len(myfilecontent_5g)
+    offset_2g = len(myfilecontent_2g) 
+    t = time.time_getunixtime()
+    
+    content_5g = str(t) + ' ' + str(get_network_bytes('wlan1')['trans']) + ' ' +str(get_network_bytes('wlan1')['recv']) + ' ' + str(get_network_bytes('wlan1')['rx_error']) + ' ' + str(get_network_bytes('wlan1')['tx_error']) + ' ' + str(get_network_bytes('wlan1')['rx_drop']) + ' ' + str(get_network_bytes('wlan1')['tx_drop']) + ' ' + str(get_station('wlan1')[0]['tx_bitrate']) + ' ' + str(get_station('wlan1')[0]['rx_bitrate']) + ' ' + str(get_station('wlan1')[0]['signal_avg']) + ' ' + str(get_station('wlan1')[0]['tx retries']) + ' ' + str(get_station('wlan1')[0]['tx failed'])
+
+    content_2g = str(t) + ' ' + str(get_network_bytes('wlan0')['trans']) + ' ' +str(get_network_bytes('wlan0')['recv']) + ' ' + str(get_network_bytes('wlan0')['rx_error']) + ' ' + str(get_network_bytes('wlan0')['tx_error']) + ' ' + str(get_network_bytes('wlan0')['rx_drop']) + ' ' + str(get_network_bytes('wlan0')['tx_drop']) + ' ' + str(get_station('wlan0')[0]['tx_bitrate']) + ' ' + str(get_station('wlan0')[0]['rx_bitrate']) + ' ' + str(get_station('wlan0')[0]['signal_avg']) + ' ' + str(get_station('wlan0')[0]['tx retries']) + ' ' + str(get_station('wlan0')[0]['tx failed'])
+    for i in wifi_status('wlan1'):
+      content_5g += ' ' + i['frequency'] + ' ' + i['busy_time'] + ' ' + i['active_time'] + ' ' + i['transmit_time'] + ' ' + i['receive_time']
+    for i in wifi_status('wlan0'):
+      content_2g += ' ' + i['frequency'] + ' ' + i['busy_time'] + ' ' + i['active_time'] + ' ' + i['transmit_time'] + ' ' + i['receive_time']
+    try:
+      myfileobject5g.writeat(content_5g + "\n", offset_5g)
+    except IOError:
+      pass
+    try:
+      myfileobject2g.writeat(content_2g + "\n", offset_2g)
+    except IOError:
+      pass
+    sleep(1)
+  myfileobject5g.close()
+  myfileobject2g.close()
+
+def sendpacket1():
+  data = "a"*50000
+  port = 63100
+  socketobject = openconnection('192.168.1.136', 55556, "192.168.1.1", port, 5)
+  t_start = getruntime()
+  while True:
+    if (getruntime() - t_start <30):
+      try:
+        socketobject.send(data)
+      except SocketWouldBlockError:
+        sleep(0.005)
+    else:
+      sleep(10)
+      t_start = getruntime()
+
+def sendpacket2():
+  data = "a"*50000
+  port = 63101
+  socketobject = openconnection('192.168.1.143', 55556, "192.168.1.1", port, 5)
+  t_start = getruntime()
+  while True:
+    if (getruntime() - t_start <30):
+      try:
+        socketobject.send(data)
+      except SocketWouldBlockError:
+        sleep(0.005)
+    else:
+      sleep(10)
+      t_start = getruntime()
+
+createthread(passive_monitor)
+createthread(sendpacket1)
+createthread(sendpacket2)

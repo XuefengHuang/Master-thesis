@@ -1,0 +1,9 @@
+data = "a"*10000
+time1 = getruntime()
+while True:
+	if getruntime() - time1 <30:
+		sendmessage('192.168.1.136', 63100, data, '192.168.1.1', 63101)
+	else:
+		sleep(30)
+		time1 = getruntime()
+

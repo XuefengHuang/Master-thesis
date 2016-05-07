@@ -1,6 +1,6 @@
 \chapter{DEPLOYMENT EXPERIENCE} 
 \label{ssec.deployment}
-Deploying \sysname in a real-world environment is essential to study and evaluate home networks availability, performance and reliability. We want our platform to observe real traffic of users from any Wi-Fi connected devices in a home; at the same time, we want to maintain the flexibility to deploy experiment code quickly and easily without any impact on users' experience. To achieve this goal, we integrate \sysname with the production network.
+Deploying \sysname in a real-world environment is essential to the study and evaluation of home network's availability, performance and reliability. We want our platform to observe real user traffic from any Wi-Fi connected devices in a home; at the same time, we want to maintain the flexibility to deploy experiment code quickly and easily, without any impact on users experience. To achieve this goal, we integrate \sysname with a production network.
 
 We deploy our platform on a TP-Link TL-WDR3600 router, which has a 560 MHz MIPS processor, 8MB of flash storage, 128MB of RAM and a dual-band wireless interface. We replace the router's default software with a custom version of OpenWrt Chaos Calmer~\cite{openwrt}. The 802.11 interface operates at both 2.4 GHz and 5 GHz bands. The location is in an office building on the NYU campus. This hardware is limited, even when compared to other embedded mobile devices like smartphones, yet it is powerful enough to reliably support a variety of measurement experiments.
 

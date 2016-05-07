@@ -27,9 +27,9 @@ def sendpacket():
         socketobject.send(data)
       except SocketWouldBlockError:
         sleep(0.005)
-      else:
-        sleep(30)
-        t_start = getruntime()
+    else:
+      sleep(30)
+      t_start = getruntime()
 
 createthread(passive_monitor)
 createthread(sendpacket)
