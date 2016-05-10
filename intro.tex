@@ -31,7 +31,7 @@ unseen sections of the network. Such a platform should also provide a set of
 programming interfaces to support as wide an array of measurements as 
 possible, including factors affecting broadband performance, or data that 
 can increase understanding of usage and connectivity in home networks.
-Lastly, the ideal platform proposed here most ensure the privacy of the 
+Lastly, the platform proposed here must ensure the privacy of the 
 user and prevent abuse of his or her device or network resources.
 
 A number of measurement and experimentation platforms have been developed to 
@@ -85,9 +85,13 @@ Internet users. It supports both active and passive network measurements.}
 
 \sysname is based on Seattle testbed, a community-driven and open-source cloud computing system~\cite{zhuang2013experience,cappos2009seattle}. Compared to computer and mobile device environments, deployment on home wireless routers has more resource limitations, such as restricted computational resources. However, recently we have been able to port Seattle Testbed to OpenWrt, a popular Linux platform for home routers~\cite{openwrt}. Users can build their own \sysname installer (IPK) via a config file we provide using OpenWrt SDK and install it on the device directly. 
 
-\sysname supports standard implementations of useful measurement primitives such as ping, traceroute, network traffic capture, and the like. We extend eight functionalities based on Repy (the core sandbox of Seattle), include \texttt{get\_network\_bytes}, \texttt{get\_network\_packets}, \texttt{get\_network\_interfaces}, \texttt{wifi\_status}, \texttt{scan}, \texttt{get\_station}, \texttt{ping} and \texttt{traceroute}. This rich set of measurement primitives help researchers to implement a wide range of network measurements, such as mapping Internet paths (via traceroute), studying home network usage patterns and understanding wireless network performance.
 
-\sysname supports a constrained environment of programmable measurements. In order to securely interact with home routers on remote user devices, we use Fence (a non-intrusive mechanism that mediates and limits access to diverse resources using uniform resource control)~\cite{li2015fence} to allocate a fixed percentage of the device's CPU, memory disk, and other resources to one or more VMs. For example, we set the legal times of accessing the \emph{/proc} file system to prevent DoS attacks using our API calls. To prevent exfiltration of sensitive information from devices, we use security layers to mediate access to the wireless sensor by restricting capability access and reducing the precision of returned data. 
+\sysname supports standard implementations of useful measurement primitives such as ping, traceroute, network traffic capture, and the like. We extend eight functionalities based on Repy (the core sandbox of Seattle), include 
+\texttt{get\_network\_
+bytes}, \texttt{get\_network\_packets}, \texttt{get\_network\_interfaces}, \texttt{wifi\_status}, \texttt{scan}, \texttt{get\_
+station}, \texttt{ping} and \texttt{traceroute}. This rich set of measurement primitives help researchers to implement a wide range of network measurements, such as mapping Internet paths (via traceroute), studying home network usage patterns and understanding wireless network performance.
+
+\sysname supports a constrained environment of programmable measurements. In order to securely interact with home routers on remote user devices, we use Fence (a non-intrusive mechanism that mediates and limits access to diverse resources using uniform resource control)~\cite{li2015fence} to allocate a fixed percentage of the device's CPU, memory disk, and other resources to one or more VMs. For example, we set the legal times of accessing the \texttt{/proc} file system to prevent DoS attacks using our API calls. To prevent exfiltration of sensitive information from devices, we use security layers to mediate access to the wireless sensor by restricting capability access and reducing the precision of returned data. 
 
 
 By integrating \sysname into home networks, we get the benefits of a real world deployment while ensuring flexibility to run experiments without compromising home networks. We demonstrate \sysname's utility by implementing both active and passive measurements that together exercise different new API calls. We monitor our lab's network traffic, which is in an office building, from the vantage point of the access point. We report on additional experiences gained using \sysname in three different use cases. We find that there are many factors affecting throughput on 2.4 GHz and 5 GHz band. We also find that most of the access points select non-overlapping channels (e.g., channel 1, 6, 11) to avoid adjacent-channel interference. 
